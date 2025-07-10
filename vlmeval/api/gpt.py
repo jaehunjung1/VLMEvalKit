@@ -1,3 +1,5 @@
+import ipdb
+
 from ..smp import *
 import os
 import sys
@@ -49,7 +51,11 @@ class OpenAIWrapper(BaseAPI):
                  use_azure: bool = False,
                  **kwargs):
 
-        self.model = model
+        # args.judge has to be without slash (judge name is used as part of eval file name)
+        if model == "Qwen3-32B":
+            self.model = "Qwen/Qwen3-32B"
+        else:
+            self.model = model
         self.cur_idx = 0
         self.fail_msg = 'Failed to obtain answer via API. '
         self.max_tokens = max_tokens
@@ -100,10 +106,6 @@ class OpenAIWrapper(BaseAPI):
                 env_key = os.environ.get('OPENAI_API_KEY', '')
                 if key is None:
                     key = env_key
-                assert isinstance(key, str) and key.startswith('sk-'), (
-                    f'Illegal openai_key {key}. '
-                    'Please set the environment variable OPENAI_API_KEY to your openai key. '
-                )
 
         self.key = key
         assert img_size > 0 or img_size == -1

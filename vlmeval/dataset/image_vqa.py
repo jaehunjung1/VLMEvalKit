@@ -3,6 +3,7 @@ import re
 import tempfile
 from functools import partial
 
+import ipdb
 import pandas as pd
 
 from .image_base import ImageBaseDataset
