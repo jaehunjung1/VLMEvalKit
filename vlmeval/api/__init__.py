@@ -19,6 +19,8 @@ from .taichu import TaichuVLAPI, TaichuVLRAPI
 from .doubao_vl_api import DoubaoVL
 from .mug_u import MUGUAPI
 from .kimivl_api import KimiVLAPIWrapper, KimiVLAPI
+from .qwen2_vl_vllm import Qwen2VLVLLM
+
 
 __all__ = [
     'OpenAIWrapper', 'HFChatModel', 'GeminiWrapper', 'GPT4V', 'Gemini',
@@ -26,5 +28,6 @@ __all__ = [
     'Reka', 'GLMVisionAPI', 'CWWrapper', 'SenseChatVisionAPI', 'HunyuanVision',
     'Qwen2VLAPI', 'BlueLMWrapper', 'BlueLM_V_API', 'JTVLChatAPI',
     'bailingMMAPI', 'TaiyiAPI', 'TeleMMAPI', 'SiliconFlowAPI', 'LMDeployAPI',
-    'TaichuVLAPI', 'TaichuVLRAPI', 'DoubaoVL', "MUGUAPI", 'KimiVLAPIWrapper', 'KimiVLAPI'
+    'TaichuVLAPI', 'TaichuVLRAPI', 'DoubaoVL', "MUGUAPI", 'KimiVLAPIWrapper', 'KimiVLAPI',
+    'Qwen2VLVLLM',
 ]

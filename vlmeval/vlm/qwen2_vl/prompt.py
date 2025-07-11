@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import ipdb
+
 
 class Qwen2VLPromptMixin:
     """
@@ -14,7 +16,6 @@ class Qwen2VLPromptMixin:
     """
 
     def __init__(self, *args, use_custom_prompt: bool = True, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
         self._use_custom_prompt = use_custom_prompt
 
     def set_dump_image(self, dump_image_func):

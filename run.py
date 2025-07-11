@@ -180,8 +180,10 @@ You can launch the evaluation by setting either --data and --model or --config.
     # Infer + Eval or Infer Only
     parser.add_argument('--mode', type=str, default='all', choices=['all', 'infer'])
     # API Kwargs, Apply to API VLMs and Judge API LLMs
-    parser.add_argument('--api-nproc', type=int, default=4, help='Parallel API calling')
-    parser.add_argument('--retry', type=int, default=None, help='retry numbers for API VLMs')
+    parser.add_argument('--infer-api-nproc', type=int, default=4, help='Parallel API calling')
+    parser.add_argument('--judge-api-nproc', type=int, default=4, help='Parallel API calling')
+    parser.add_argument('--infer-retry', type=int, default=None, help='retry numbers for API VLMs')
+    parser.add_argument('--judge-retry', type=int, default=None, help='retry numbers for API VLMs')
     parser.add_argument('--judge-args', type=str, default=None, help='Judge arguments in JSON format')
     # Explicitly Set the Judge Model
     parser.add_argument('--judge', type=str, default=None)
@@ -224,8 +226,8 @@ def main():
 
     if not use_config:
         for k, v in supported_VLM.items():
-            if hasattr(v, 'keywords') and 'retry' in v.keywords and args.retry is not None:
-                v.keywords['retry'] = args.retry
+            if hasattr(v, 'keywords') and 'retry' in v.keywords and args.infer_retry is not None:
+                v.keywords['retry'] = args.infer_retry
                 supported_VLM[k] = v
             if hasattr(v, 'keywords') and 'verbose' in v.keywords and args.verbose is not None:
                 v.keywords['verbose'] = args.verbose
@@ -250,7 +252,7 @@ def main():
 
     for _, model_name in enumerate(args.model):
         model = None
-        date, commit_id = timestr('day'), githash(digits=8)
+        date, commit_id = datetime.datetime.now().strftime('%Y%m%d-%H%M%S'), githash(digits=8, fallback="0")
         eval_id = f"T{date}_G{commit_id}"
 
         pred_root = osp.join(args.work_dir, model_name, eval_id)
@@ -359,7 +361,7 @@ def main():
                         dataset=dataset,
                         result_file_name=result_file_base,
                         verbose=args.verbose,
-                        api_nproc=args.api_nproc,
+                        api_nproc=args.infer_api_nproc,
                         use_vllm=args.use_vllm)
                 elif dataset.TYPE == 'MT':
                     model = infer_data_job_mt(
@@ -368,7 +370,7 @@ def main():
                         model_name=model_name,
                         dataset=dataset,
                         verbose=args.verbose,
-                        api_nproc=args.api_nproc,
+                        api_nproc=args.infer_api_nproc,
                         ignore_failed=args.ignore,
                         use_vllm=args.use_vllm)
                 else:
@@ -378,21 +380,21 @@ def main():
                         model_name=model_name,
                         dataset=dataset,
                         verbose=args.verbose,
-                        api_nproc=args.api_nproc,
+                        api_nproc=args.infer_api_nproc,
                         ignore_failed=args.ignore,
                         use_vllm=args.use_vllm)
 
                 # Set the judge kwargs first before evaluation or dumping
 
                 judge_kwargs = {
-                    'nproc': args.api_nproc,
+                    'nproc': args.judge_api_nproc,
                     'verbose': args.verbose,
-                    'retry': args.retry if args.retry is not None else 3,
+                    'retry': args.judge_retry if args.judge_retry is not None else 5,
                     **(json.loads(args.judge_args) if args.judge_args else {}),
                 }
 
-                if args.retry is not None:
-                    judge_kwargs['retry'] = args.retry
+                if args.judge_retry is not None:
+                    judge_kwargs['retry'] = args.judge_retry
                 if args.judge is not None:
                     judge_kwargs['model'] = args.judge
                 else:
@@ -476,6 +478,7 @@ def main():
 
                     # Perform the Evaluation
                     eval_results = dataset.evaluate(result_file, **judge_kwargs)
+
                     # Display Evaluation Results in Terminal
                     if eval_results is not None:
                         assert isinstance(eval_results, dict) or isinstance(eval_results, pd.DataFrame)
@@ -492,16 +495,16 @@ def main():
                     if eval_proxy is not None:
                         proxy_set(old_proxy)
 
-                    # Create the symbolic links for the prediction files
-                    files = os.listdir(pred_root)
-                    files = [x for x in files if (f'{model_name}_{dataset_name}' in x or "status.json" in x)]
-                    for f in files:
-                        cwd = os.getcwd()
-                        file_addr = osp.join(cwd, pred_root, f)
-                        link_addr = osp.join(cwd, pred_root_meta, f)
-                        if osp.exists(link_addr) or osp.islink(link_addr):
-                            os.remove(link_addr)
-                        os.symlink(file_addr, link_addr)
+                    # # Create the symbolic links for the prediction files
+                    # files = os.listdir(pred_root)
+                    # files = [x for x in files if (f'{model_name}_{dataset_name}' in x or "status.json" in x)]
+                    # for f in files:
+                    #     cwd = os.getcwd()
+                    #     file_addr = osp.join(cwd, pred_root, f)
+                    #     link_addr = osp.join(cwd, pred_root_meta, f)
+                    #     if osp.exists(link_addr) or osp.islink(link_addr):
+                    #         os.remove(link_addr)
+                    #     os.symlink(file_addr, link_addr)
 
             except Exception as e:
                 logger.exception(f'Model {model_name} x Dataset {dataset_name} combination failed: {e}, '

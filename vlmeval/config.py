@@ -1451,6 +1451,23 @@ oryx_series = {
     'oryx': partial(Oryx, model_path="THUdyh/Oryx-1.5-7B"),
 }
 
+vllm_api_base = os.environ.get("VLLM_API_BASE", "http://0.0.0.0:8000/v1")
+qwen2_vl_vllm_series = {
+    "Qwen2.5-VL-3B-VLLM": partial(
+        Qwen2VLVLLM,
+        model_name="Qwen2.5-VL-3B-VLLM",
+        api_base=vllm_api_base,
+        min_pixels=1280 * 28 * 28,
+        max_pixels=16384 * 28 * 28,
+        max_tokens=8192,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=300,
+        verbose=False,
+    ),
+}
+
 # recommend: vllm serve moonshotai/Kimi-VL-A3B-Thinking-2506 
 # --served-model-name api-kimi-vl-thinking-2506 --trust-remote-code
 # --tensor-parallel-size 2 --max-num-batched-tokens 131072 
@@ -1495,7 +1512,8 @@ model_groups = [
     aria_series, smolvlm_series, sail_series, valley_series, vita_series,
     ross_series, emu_series, ola_series, ursa_series, gemma_series,
     long_vita_series, ristretto_series, kimi_series, aguvis_series, hawkvl_series, 
-    flash_vl, kimi_vllm_series, oryx_series
+    flash_vl, kimi_vllm_series, oryx_series,
+    qwen2_vl_vllm_series,
 ]
 
 for grp in model_groups:
