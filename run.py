@@ -252,7 +252,7 @@ def main():
 
     for _, model_name in enumerate(args.model):
         model = None
-        date, commit_id = datetime.datetime.now().strftime('%Y%m%d-%H%M%S'), githash(digits=8, fallback="0")
+        date, commit_id = datetime.datetime.now().strftime('%Y%m%d'), githash(digits=8, fallback="0")
         eval_id = f"T{date}_G{commit_id}"
 
         pred_root = osp.join(args.work_dir, model_name, eval_id)

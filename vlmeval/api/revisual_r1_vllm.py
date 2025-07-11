@@ -1,4 +1,5 @@
 import json
+import re
 
 import ipdb
 import requests
@@ -10,7 +11,7 @@ from ..vlm.qwen2_vl.model import ensure_video_url, ensure_image_url
 from ..vlm.qwen2_vl.prompt import Qwen2VLPromptMixin
 
 
-class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
+class ReVisualR1VLLM(BaseAPI, Qwen2VLPromptMixin):
     is_api: bool = True
 
     def __init__(self,
@@ -18,7 +19,7 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
                  api_base: str = None,
                  min_pixels: int = 1280 * 28 * 28,
                  max_pixels: int = 16384 * 28 * 28,
-                 max_tokens: int = 8192,
+                 max_tokens: int = 32768,
                  temperature: float = 0.01,
                  retry: int = 10,
                  wait: int = 5,
@@ -28,10 +29,8 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
                  **kwargs):
 
         self.model_name = model_name
-        if model_name == "Qwen2.5-VL-3B-VLLM":
-            self.full_model_name = "Qwen/Qwen2.5-VL-3B-Instruct"
-        elif model_name == "Qwen2.5-VL-7B-VLLM":
-            self.full_model_name = "Qwen/Qwen2.5-VL-7B-Instruct"
+        if model_name == "ReVisual-R1-VLLM":
+            self.full_model_name = "csfufu/Revisual-R1-final"
         else:
             ipdb.set_trace()
             raise NotImplementedError
@@ -45,7 +44,7 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
 
         self.key = ""  # we won't set key for VLLM server
 
-        OpenAIWrapper.__init__(self, wait=wait, retry=retry, system_prompt=None, verbose=verbose, **kwargs)
+        BaseAPI.__init__(self, wait=wait, retry=retry, system_prompt=None, verbose=verbose, **kwargs)
         Qwen2VLPromptMixin.__init__(self, use_custom_prompt=False, **kwargs)
 
         self.api_base = api_base
@@ -53,6 +52,8 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
             base_url=self.api_base,
             api_key=""
         )
+
+        self.logger.info(f'Model: {self.full_model_name}; Using API Base: {self.api_base}')
 
     def _prepare_content_vllm(self, inputs: list[dict[str, str]], dataset: str | None = None) -> list[dict[str, str]]:
         """
@@ -96,6 +97,29 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
 
         return content
 
+    @staticmethod
+    def _parse_answer(generation: str) -> str | None:
+        """
+        Parse the answer string.
+        If not found, return None.
+        """
+        if "</think>" in generation:
+            answer = generation.split("</think>")[-1].strip()
+        else:
+            answer = generation
+
+        # if "</think>" in generation:
+        #     generation = generation.split("</think>")[-1].strip()
+        #
+        # summary_candidates = re.findall(r'(?<=<summary>)(.*?)(?=</summary>)', generation)
+        #
+        # if len(summary_candidates) == 0:
+        #     answer = None
+        # else:
+        #     answer = summary_candidates[0]
+
+        return answer
+
     def generate_inner(self, message, **kwargs):
         messages = [
             {"role": "user", "content": self._prepare_content_vllm(message)}
@@ -138,12 +162,14 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
         answer = self.fail_msg
         try:
             resp_struct = json.loads(response.text)
-            answer = resp_struct['choices'][0]['message']['content'].strip()
+            generation = resp_struct['choices'][0]['message']['content'].strip()
+            answer = self._parse_answer(generation)
+            if answer is None:
+                answer = generation
         except Exception as err:
             if self.verbose:
                 self.logger.error(f'{type(err)}: {err}')
                 self.logger.error(response.text if hasattr(response, 'text') else response)
 
         return ret_code, answer, response
-
 

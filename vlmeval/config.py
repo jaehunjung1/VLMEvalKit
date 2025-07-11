@@ -1,3 +1,4 @@
+from vlmeval.api.revisual_r1_vllm import ReVisualR1VLLM
 from vlmeval.vlm import *
 from vlmeval.api import *
 from functools import partial
@@ -1452,7 +1453,7 @@ oryx_series = {
 }
 
 vllm_api_base = os.environ.get("VLLM_API_BASE", "http://0.0.0.0:8000/v1")
-qwen2_vl_vllm_series = {
+vllm_series = {
     "Qwen2.5-VL-3B-VLLM": partial(
         Qwen2VLVLLM,
         model_name="Qwen2.5-VL-3B-VLLM",
@@ -1466,6 +1467,32 @@ qwen2_vl_vllm_series = {
         timeout=300,
         verbose=False,
     ),
+    "Qwen2.5-VL-7B-VLLM": partial(
+        Qwen2VLVLLM,
+        model_name="Qwen2.5-VL-7B-VLLM",
+        api_base=vllm_api_base,
+        min_pixels=1280 * 28 * 28,
+        max_pixels=16384 * 28 * 28,
+        max_tokens=8192,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=300,
+        verbose=False,
+    ),
+    "ReVisual-R1-VLLM": partial(
+        ReVisualR1VLLM,
+        model_name="ReVisual-R1-VLLM",
+        api_base=vllm_api_base,
+        min_pixels=1280 * 28 * 28,
+        max_pixels=16384 * 28 * 28,
+        max_tokens=32768,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=300,
+        verbose=False,
+    )
 }
 
 # recommend: vllm serve moonshotai/Kimi-VL-A3B-Thinking-2506 
@@ -1513,7 +1540,7 @@ model_groups = [
     ross_series, emu_series, ola_series, ursa_series, gemma_series,
     long_vita_series, ristretto_series, kimi_series, aguvis_series, hawkvl_series, 
     flash_vl, kimi_vllm_series, oryx_series,
-    qwen2_vl_vllm_series,
+    vllm_series,
 ]
 
 for grp in model_groups:
