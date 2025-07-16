@@ -491,6 +491,31 @@ def main():
                                 eval_results = eval_results.T
                             logger.info('\n' + tabulate(eval_results))
 
+                        if "MMMU_Pro" in dataset_name:
+                            stem_no_stem_results = defaultdict(list)
+
+                            eval_results_dict = eval_results.to_dict()[0]
+                            eval_results_dict.pop("split")
+                            eval_results_dict.pop("Overall")
+
+                            stem_subjects = {
+                                "Biology", "Basic_Medical_Science", "Chemistry", "Clinical_Medicine",
+                                "Diagnostics_and_Laboratory_Medicine", "Computer_Science", "Electronics",
+                                "Energy_and_Power", "Materials", "Math",
+                                "Mechanical_Engineering", "Pharmacy", "Physics"
+                            }
+                            for subject in eval_results_dict.keys():
+                                if subject in stem_subjects:
+                                    stem_no_stem_results["stem"].append(eval_results_dict[subject])
+                                else:
+                                    stem_no_stem_results["non-stem"].append(eval_results_dict[subject])
+
+                            assert len(stem_no_stem_results["stem"]) == len(stem_subjects)
+
+                            print(f"STEM Acc: {np.mean(stem_no_stem_results['stem'])}")
+                            print(f"Non-STEM Acc: {np.mean(stem_no_stem_results['non-stem'])}")
+
+
                     # Restore the proxy
                     if eval_proxy is not None:
                         proxy_set(old_proxy)

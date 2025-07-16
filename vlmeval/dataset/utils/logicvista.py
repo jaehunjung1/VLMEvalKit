@@ -39,7 +39,7 @@ def build_prompt_logicvista(line):
 
 def LogicVista_auxeval(model, line):
     prompt = build_prompt_logicvista(line)
-    print(prompt)
+    # print(prompt)
     log = ''
     retry = 5
 

@@ -105,8 +105,11 @@ class ReVisualR1VLLM(BaseAPI, Qwen2VLPromptMixin):
         """
         if "</think>" in generation:
             answer = generation.split("</think>")[-1].strip()
+        elif len(generation) > 3000:
+            # to reduce length
+            answer = generation[-3000:]
         else:
-            answer = generation
+            answer = ""
 
         # if "</think>" in generation:
         #     generation = generation.split("</think>")[-1].strip()
@@ -135,9 +138,6 @@ class ReVisualR1VLLM(BaseAPI, Qwen2VLPromptMixin):
 
         temperature = kwargs.pop('temperature', self.temperature)
         max_tokens = kwargs.pop('max_tokens', self.max_tokens)
-
-        # if self.verbose:
-        #     print(f'\033[31m{messages}\033[0m')
 
         # send API request
         headers = {'Content-Type': 'application/json', 'Authorization': f'Bearer {self.key}'}
