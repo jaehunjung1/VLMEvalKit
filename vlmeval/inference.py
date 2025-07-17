@@ -113,7 +113,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         'Llama-4' in model_name
         or 'Qwen2-VL' in model_name
         or 'Qwen2.5-VL' in model_name
-    ):
+    ) and "VLLM" not in model_name:  # if VLLM in model_name, we are going to use VLLM anyway (no use_vllm necessary)
         kwargs = {'use_vllm': use_vllm}
 
     # (25.06.05) In newer version of transformers (after 4.50), with device_map='auto' and torchrun launcher,
