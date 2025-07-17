@@ -219,6 +219,11 @@ def load_env():
     for k, v in values.items():
         if v is not None and len(v):
             os.environ[k] = v
+
+            if k == "LMUData":
+                os.environ[k] = osp.expanduser(v)
+                print(f"LMUData Root: {os.environ[k]}")
+
     logging.info(f'API Keys successfully loaded from {pth}')
 
 def pip_install_robust(package):

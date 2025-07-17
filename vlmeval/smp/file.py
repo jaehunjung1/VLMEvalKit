@@ -1,5 +1,7 @@
 import json
 import pickle
+
+import ipdb
 import pandas as pd
 import os
 import csv
@@ -68,10 +70,14 @@ def localize_df(data, dname, nproc=32):
 def LMUDataRoot():
     if 'LMUData' in os.environ and osp.exists(os.environ['LMUData']):
         return os.environ['LMUData']
-    home = osp.expanduser('~')
-    root = osp.join(home, 'LMUData')
-    os.makedirs(root, exist_ok=True)
-    return root
+    elif 'LMUData' in os.environ and not osp.exists(os.environ['LMUData']):
+        os.makedirs(os.environ['LMUData'])
+        return os.environ['LMUData']
+    else:
+        home = osp.expanduser('~')
+        root = osp.join(home, 'LMUData')
+        os.makedirs(root, exist_ok=True)
+        return root
 
 
 def HFCacheRoot():
