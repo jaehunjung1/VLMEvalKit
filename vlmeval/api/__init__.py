@@ -20,6 +20,7 @@ from .doubao_vl_api import DoubaoVL
 from .mug_u import MUGUAPI
 from .kimivl_api import KimiVLAPIWrapper, KimiVLAPI
 from .qwen2_vl_vllm import Qwen2VLVLLM
+from .vllm_qwen2_vl_reasoning import Qwen2VLReasoningVLLM
 
 
 __all__ = [
@@ -29,5 +30,5 @@ __all__ = [
     'Qwen2VLAPI', 'BlueLMWrapper', 'BlueLM_V_API', 'JTVLChatAPI',
     'bailingMMAPI', 'TaiyiAPI', 'TeleMMAPI', 'SiliconFlowAPI', 'LMDeployAPI',
     'TaichuVLAPI', 'TaichuVLRAPI', 'DoubaoVL', "MUGUAPI", 'KimiVLAPIWrapper', 'KimiVLAPI',
-    'Qwen2VLVLLM',
+    'Qwen2VLVLLM', "Qwen2VLReasoningVLLM",
 ]

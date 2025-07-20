@@ -11,7 +11,8 @@ from ..vlm.qwen2_vl.model import ensure_video_url, ensure_image_url
 from ..vlm.qwen2_vl.prompt import Qwen2VLPromptMixin
 
 
-class ReVisualR1VLLM(BaseAPI, Qwen2VLPromptMixin):
+class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
+    """Qwen-2-VL based Reasoning Models"""
     is_api: bool = True
 
     def __init__(self,
@@ -31,6 +32,10 @@ class ReVisualR1VLLM(BaseAPI, Qwen2VLPromptMixin):
         self.model_name = model_name
         if model_name == "ReVisual-R1-VLLM":
             self.full_model_name = "csfufu/Revisual-R1-final"
+        elif model_name == "MiMo-VL-7B-SFT-VLLM":
+            self.full_model_name = "XiaomiMiMo/MiMo-VL-7B-SFT"
+        elif model_name == "MiMo-VL-7B-RL-VLLM":
+            self.full_model_name = "XiaomiMiMo/MiMo-VL-7B-RL"
         else:
             ipdb.set_trace()
             raise NotImplementedError
@@ -97,29 +102,21 @@ class ReVisualR1VLLM(BaseAPI, Qwen2VLPromptMixin):
 
         return content
 
-    @staticmethod
-    def _parse_answer(generation: str) -> str | None:
+    def _parse_answer(self, generation: str) -> str | None:
         """
         Parse the answer string.
         If not found, return None.
         """
-        if "</think>" in generation:
-            answer = generation.split("</think>")[-1].strip()
-        elif len(generation) > 3000:
-            # to reduce length
-            answer = generation[-3000:]
+        if self.model_name in ["ReVisual-R1-VLLM", "MiMo-VL-7B-SFT-VLLM", "MiMo-VL-7B-RL-VLLM"]:
+            if "</think>" in generation:
+                answer = generation.split("</think>")[-1].strip()
+            elif len(generation) > 3000:
+                # to reduce length
+                answer = generation[-3000:]
+            else:
+                answer = ""
         else:
-            answer = ""
-
-        # if "</think>" in generation:
-        #     generation = generation.split("</think>")[-1].strip()
-        #
-        # summary_candidates = re.findall(r'(?<=<summary>)(.*?)(?=</summary>)', generation)
-        #
-        # if len(summary_candidates) == 0:
-        #     answer = None
-        # else:
-        #     answer = summary_candidates[0]
+            raise NotImplementedError
 
         return answer
 

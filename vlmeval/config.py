@@ -1,4 +1,3 @@
-from vlmeval.api.revisual_r1_vllm import ReVisualR1VLLM
 from vlmeval.vlm import *
 from vlmeval.api import *
 from functools import partial
@@ -1481,7 +1480,7 @@ vllm_series = {
         verbose=False,
     ),
     "ReVisual-R1-VLLM": partial(
-        ReVisualR1VLLM,
+        Qwen2VLReasoningVLLM,
         model_name="ReVisual-R1-VLLM",
         api_base=vllm_api_base,
         min_pixels=1280 * 28 * 28,
@@ -1492,7 +1491,33 @@ vllm_series = {
         wait=5,
         timeout=300,
         verbose=False,
-    )
+    ),
+    "MiMo-VL-7B-SFT-VLLM": partial(
+        Qwen2VLReasoningVLLM,
+        model_name="MiMo-VL-7B-SFT-VLLM",
+        api_base=vllm_api_base,
+        min_pixels=1280 * 28 * 28,
+        max_pixels=16384 * 28 * 28,
+        max_tokens=32768,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=300,
+        verbose=False,
+    ),
+    "MiMo-VL-7B-RL-VLLM": partial(
+        Qwen2VLReasoningVLLM,
+        model_name="MiMo-VL-7B-RL-VLLM",
+        api_base=vllm_api_base,
+        min_pixels=1280 * 28 * 28,
+        max_pixels=16384 * 28 * 28,
+        max_tokens=32768,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=300,
+        verbose=False,
+    ),
 }
 
 # recommend: vllm serve moonshotai/Kimi-VL-A3B-Thinking-2506 
