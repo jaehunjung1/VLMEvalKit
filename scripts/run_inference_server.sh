@@ -9,3 +9,6 @@
 
 vllm serve XiaomiMiMo/MiMo-VL-7B-SFT --port 8000 --host 0.0.0.0 --dtype bfloat16 --tensor-parallel-size 4 \
 --allowed-local-media-path / --limit-mm-per-prompt image=10
+
+#vllm serve XiaomiMiMo/MiMo-VL-7B-RL --port 8000 --host 0.0.0.0 --dtype bfloat16 --tensor-parallel-size 4 \
+#--allowed-local-media-path / --limit-mm-per-prompt image=10
