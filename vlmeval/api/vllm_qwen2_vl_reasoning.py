@@ -36,6 +36,8 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             self.full_model_name = "XiaomiMiMo/MiMo-VL-7B-SFT"
         elif model_name == "MiMo-VL-7B-RL-VLLM":
             self.full_model_name = "XiaomiMiMo/MiMo-VL-7B-RL"
+        elif model_name == "lpt2-stage2-sft-dpo":
+            self.full_model_name = "Jaehun/lpt2-stage2-sft-dpo"
         else:
             ipdb.set_trace()
             raise NotImplementedError
@@ -115,13 +117,36 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 answer = generation[-3000:]
             else:
                 answer = ""
+        elif self.model_name in ["lpt2-stage2-sft-dpo"]:
+            if candidates := re.findall(r"<answer>(.+)</answer>", generation):
+                answer = candidates[-1].strip()
+            elif len(generation) > 3000:
+                # to reduce length
+                answer = generation[-3000:]
+            else:
+                answer = ""
         else:
             raise NotImplementedError
 
         return answer
 
     def generate_inner(self, message, **kwargs):
+        system_message = [
+            {
+                "type": "text",
+                "value": "A conversation between User and Assistant. The user asks a visual question, and the "
+                         "Assistant solves it. The assistant first thinks about the reasoning "
+                         "process in the mind and then provides the user with the answer. The "
+                         "reasoning process and answer are enclosed within <think> </think> and "
+                         "<answer> </answer> tags, respectively, i.e., <think> reasoning process "
+                         "here </think> <answer> answer here </answer>. The following question "
+                         "requires the capability of \"Spatial Reasoning\" Please answer with the "
+                         "full text of the correct option.",
+             }
+        ]
         messages = [
+            {"role": "system", "content": self._prepare_content_vllm(system_message)},
+
             {"role": "user", "content": self._prepare_content_vllm(message)}
         ]
         mm_processor_kwargs = None

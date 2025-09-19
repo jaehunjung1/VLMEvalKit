@@ -1518,6 +1518,19 @@ vllm_series = {
         timeout=300,
         verbose=False,
     ),
+    "lpt2-stage2-sft-dpo": partial(
+        Qwen2VLReasoningVLLM,
+        model_name="lpt2-stage2-sft-dpo",
+        api_base=vllm_api_base,
+        min_pixels=512 * 28 * 28,
+        max_pixels=512 * 28 * 28,
+        max_tokens=4096,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=300,
+        verbose=False,
+    ),
 }
 
 # recommend: vllm serve moonshotai/Kimi-VL-A3B-Thinking-2506 
