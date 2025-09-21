@@ -169,7 +169,6 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             ]
 
         else:
-            system_message = None
             messages = [
                 {"role": "user", "content": self._prepare_content_vllm(message)}
             ]

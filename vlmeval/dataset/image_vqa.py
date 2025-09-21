@@ -881,7 +881,7 @@ class LogicVista(ImageBaseDataset):
         # model = judge_kwargs['model']
         model = judge_kwargs.get('model', 'exact_matching')
         assert model in [
-            'exact_matching', 'gpt-4-0125', 'gpt-4-turbo', 'gpt-4o-mini'
+            'exact_matching', 'gpt-4-0125', 'gpt-4-turbo', 'gpt-4o-mini', 'Qwen3-30B-A3B-Instruct-2507'
         ], model
         name_str_map = {
             'gpt-4-0125': 'gpt4',
