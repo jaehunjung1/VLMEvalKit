@@ -44,7 +44,7 @@ def MMTBench_result_transfer(eval_file, dataset='default', **judge_kwargs):
 
     if model == 'exact_matching':
         model = None
-    elif gpt_key_set():
+    elif use_api_judge():
         model = build_judge(**judge_kwargs)
         if not model.working():
             logger.error('The OPENAI API is not working properly, will use exact matching for evaluation')

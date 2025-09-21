@@ -892,7 +892,7 @@ class LogicVista(ImageBaseDataset):
 
         if model == 'exact_matching':
             model = None
-        elif gpt_key_set():
+        elif use_api_judge():
             model = build_judge(**judge_kwargs)
             if not model.working():
                 warnings.warn(

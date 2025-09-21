@@ -57,7 +57,7 @@ class ImageYORNDataset(ImageBaseDataset):
             model = judge_kwargs.get('model', 'exact_matching')
             if model == 'exact_matching':
                 model = None
-            elif gpt_key_set():
+            elif use_api_judge():
                 model = build_judge(**judge_kwargs)
                 if not model.working():
                     warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')

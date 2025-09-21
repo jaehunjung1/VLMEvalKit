@@ -44,11 +44,11 @@ def infer_data_api(model, work_dir, model_name, dataset, index_set=None, api_npr
             struct = dataset.build_prompt(item)
         structs.append(struct)
 
-    out_file = f'{work_dir}/{model_name}_{dataset_name}_supp.pkl'
+    out_file = f'{work_dir}/{dataset_name}_supp.pkl'
 
     # To reuse records in MMBench_V11
     if dataset_name in ['MMBench', 'MMBench_CN']:
-        v11_pred = f'{work_dir}/{model_name}_{dataset_name}_V11.xlsx'
+        v11_pred = f'{work_dir}/{dataset_name}_V11.xlsx'
         if osp.exists(v11_pred):
             try:
                 reuse_inds = load('http://opencompass.openxlab.space/utils/mmb_reuse.pkl')
@@ -82,7 +82,7 @@ def infer_data_api(model, work_dir, model_name, dataset, index_set=None, api_npr
 
 def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, api_nproc=4, use_vllm=False):
     dataset_name = dataset.dataset_name
-    prev_file = f'{work_dir}/{model_name}_{dataset_name}_PREV.pkl'
+    prev_file = f'{work_dir}/{dataset_name}_PREV.pkl'
     res = load(prev_file) if osp.exists(prev_file) else {}
     if osp.exists(out_file):
         res.update(load(out_file))
@@ -185,9 +185,9 @@ def infer_data_job(
 ):
     rank, world_size = get_rank_and_world_size()
     dataset_name = dataset.dataset_name
-    result_file = osp.join(work_dir, f'{model_name}_{dataset_name}.xlsx')
+    result_file = osp.join(work_dir, f'{dataset_name}.xlsx')
 
-    prev_file = f'{work_dir}/{model_name}_{dataset_name}_PREV.pkl'
+    prev_file = f'{work_dir}/{dataset_name}_PREV.pkl'
     if osp.exists(result_file):
         if rank == 0:
             data = load(result_file)

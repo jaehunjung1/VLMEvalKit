@@ -174,6 +174,7 @@ You can launch the evaluation by setting either --data and --model or --config.
     # Essential Args, Setting the Names of Datasets and Models
     parser.add_argument('--data', type=str, nargs='+', help='Names of Datasets')
     parser.add_argument('--model', type=str, nargs='+', help='Names of Models')
+    parser.add_argument('--save_dir_name', type=str, help='Saving folder name for local ckpt')
     parser.add_argument('--config', type=str, help='Path to the Config Json File')
     # Work Dir
     parser.add_argument('--work-dir', type=str, default='./outputs', help='select the output directory')
@@ -255,11 +256,25 @@ def main():
         date, commit_id = datetime.datetime.now().strftime('%Y%m%d'), githash(digits=8, fallback="0")
         eval_id = f"T{date}_G{commit_id}"
 
-        pred_root = osp.join(args.work_dir, model_name, eval_id)
-        pred_root_meta = osp.join(args.work_dir, model_name)
-        os.makedirs(pred_root_meta, exist_ok=True)
+        if Path(model_name).exists():
+            # local model
+            assert args.save_dir_name is not None, '--save_dir_name should be set when using local checkpoint'
+            pred_root = osp.join(args.work_dir, args.save_dir_name, eval_id)
+            pred_root_meta = osp.join(args.work_dir, args.save_dir_name)
+            os.makedirs(pred_root_meta, exist_ok=True)
+            prev_pred_roots = ls(osp.join(args.work_dir, args.save_dir_name), mode='dir')
 
-        prev_pred_roots = ls(osp.join(args.work_dir, model_name), mode='dir')
+            is_local_model = True
+
+        else:
+            # HF checkpoint
+            pred_root = osp.join(args.work_dir, model_name, eval_id)
+            pred_root_meta = osp.join(args.work_dir, model_name)
+            os.makedirs(pred_root_meta, exist_ok=True)
+            prev_pred_roots = ls(osp.join(args.work_dir, model_name), mode='dir')
+
+            is_local_model = False
+
         if len(prev_pred_roots) and args.reuse:
             prev_pred_roots.sort()
 
@@ -274,7 +289,7 @@ def main():
                 dist.barrier()
 
             try:
-                result_file_base = f'{model_name}_{dataset_name}.xlsx'
+                result_file_base = f'{dataset_name}.xlsx'
 
                 if use_config:
                     if WORLD_SIZE > 1:

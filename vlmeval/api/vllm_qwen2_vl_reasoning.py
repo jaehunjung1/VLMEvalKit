@@ -1,5 +1,6 @@
 import json
 import re
+from pathlib import Path
 
 import ipdb
 import requests
@@ -30,6 +31,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                  **kwargs):
 
         self.model_name = model_name
+        self.project_name = None
         if model_name == "ReVisual-R1-VLLM":
             self.full_model_name = "csfufu/Revisual-R1-final"
         elif model_name == "MiMo-VL-7B-SFT-VLLM":
@@ -38,6 +40,14 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             self.full_model_name = "XiaomiMiMo/MiMo-VL-7B-RL"
         elif model_name.startswith("lpt2-"):
             self.full_model_name = f"Jaehun/{self.model_name}"
+        elif Path(model_name).exists():
+            # local checkpoint
+            if "vlm_rl" in model_name:
+                self.project_name = "vlm_rl"
+            else:
+                ipdb.set_trace()
+                raise NotImplementedError
+            self.full_model_name = model_name
         else:
             ipdb.set_trace()
             raise NotImplementedError
@@ -125,29 +135,46 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 answer = generation[-3000:]
             else:
                 answer = ""
+        elif Path(self.model_name).exists() and self.project_name == "vlm_rl":
+            # VLM RL models
+            if "</think>" in generation:
+                answer = generation.split("</think>")[-1].strip()
+            elif len(generation) > 3000:
+                # to reduce length
+                answer = generation[-3000:]
+            else:
+                answer = ""
         else:
             raise NotImplementedError
 
         return answer
 
     def generate_inner(self, message, **kwargs):
-        system_message = [
-            {
-                "type": "text",
-                "value": "A conversation between User and Assistant. The user asks a visual question, and the "
-                         "Assistant solves it. The assistant first thinks about the reasoning "
-                         "process in the mind and then provides the user with the answer. The "
-                         "reasoning process and answer are enclosed within <think> </think> and "
-                         "<answer> </answer> tags, respectively, i.e., <think> reasoning process "
-                         "here </think> <answer> answer here </answer>. Please answer with the "
-                         "full text of the correct option.",
-             }
-        ]
-        messages = [
-            {"role": "system", "content": self._prepare_content_vllm(system_message)},
+        if self.model_name.startswith("lpt2-"):
+            system_message = [
+                {
+                    "type": "text",
+                    "value": "A conversation between User and Assistant. The user asks a visual question, and the "
+                             "Assistant solves it. The assistant first thinks about the reasoning "
+                             "process in the mind and then provides the user with the answer. The "
+                             "reasoning process and answer are enclosed within <think> </think> and "
+                             "<answer> </answer> tags, respectively, i.e., <think> reasoning process "
+                             "here </think> <answer> answer here </answer>. Please answer with the "
+                             "full text of the correct option.",
+                 }
+            ]
+            messages = [
+                {"role": "system", "content": self._prepare_content_vllm(system_message)},
+                {"role": "user", "content": self._prepare_content_vllm(message)}
+            ]
 
-            {"role": "user", "content": self._prepare_content_vllm(message)}
-        ]
+        else:
+            system_message = None
+            messages = [
+                {"role": "user", "content": self._prepare_content_vllm(message)}
+            ]
+
+
         mm_processor_kwargs = None
         for item in messages[0]['content']:
             if item['type'] == 'image' and item['min_pixels'] is not None:

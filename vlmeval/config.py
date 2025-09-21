@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from vlmeval.vlm import *
 from vlmeval.api import *
 from functools import partial
@@ -1598,6 +1600,23 @@ vllm_series = {
     ),
 }
 
+vlm_rl_groups = {
+    str(path): partial(
+        Qwen2VLReasoningVLLM,
+        model_name=str(path),
+        api_base=vllm_api_base,
+        min_pixels=1280 * 28 * 28,
+        max_pixels=16384 * 28 * 28,
+        max_tokens=8192,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=300,
+        verbose=False,
+    ) for path in Path("/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/"
+                       "jaehunj/verl/verl/adaptations/vlm_rl/checkpoints").rglob("*/hf_global_step_*")
+}
+
 # recommend: vllm serve moonshotai/Kimi-VL-A3B-Thinking-2506 
 # --served-model-name api-kimi-vl-thinking-2506 --trust-remote-code
 # --tensor-parallel-size 2 --max-num-batched-tokens 131072 
@@ -1643,7 +1662,7 @@ model_groups = [
     ross_series, emu_series, ola_series, ursa_series, gemma_series,
     long_vita_series, ristretto_series, kimi_series, aguvis_series, hawkvl_series, 
     flash_vl, kimi_vllm_series, oryx_series,
-    vllm_series,
+    vllm_series, vlm_rl_groups,
 ]
 
 for grp in model_groups:

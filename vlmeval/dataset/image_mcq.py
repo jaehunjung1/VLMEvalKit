@@ -253,10 +253,10 @@ class ImageMCQDataset(ImageBaseDataset):
 
         if model == 'exact_matching':
             model = None
-        elif gpt_key_set():
+        elif use_api_judge():
             model = build_judge(**judge_kwargs)
             if not model.working():
-                warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')
+                warnings.warn('Judge API is not working properly, will use exact matching for evaluation')
                 warnings.warn(DEBUG_MESSAGE)
                 model = None
         else:
@@ -698,7 +698,7 @@ class GMAIMMBenchDataset(ImageMCQDataset):
 
         if model == 'exact_matching':
             model = None
-        elif gpt_key_set():
+        elif use_api_judge():
             model = build_judge(**judge_kwargs)
             if not model.working():
                 warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')
@@ -992,7 +992,7 @@ class CVBench(ImageMCQDataset):
 
         if model_name == "exact_matching":
             model = None
-        elif gpt_key_set():
+        elif use_api_judge():
             model = build_judge(**judge_kwargs)
             if not model.working():
                 warnings.warn(DEBUG_MESSAGE)
@@ -1092,7 +1092,7 @@ class HRBenchDataset(ImageMCQDataset):
 
         if model == 'exact_matching':
             model = None
-        elif gpt_key_set():
+        elif use_api_judge():
             model = build_judge(**judge_kwargs)
             if not model.working():
                 warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')
@@ -1277,7 +1277,7 @@ class WeMath(ImageBaseDataset):
 
         if model == 'exact_matching':
             model = None
-        elif gpt_key_set():
+        elif use_api_judge():
             model = build_judge(**judge_kwargs)
             if not model.working():
                 warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')
@@ -1514,7 +1514,7 @@ class VisuLogic(ImageMCQDataset):
 
         if model == 'exact_matching':
             model = None
-        elif gpt_key_set():
+        elif use_api_judge():
             model = build_judge(**judge_kwargs)
             if not model.working():
                 warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')
@@ -1592,7 +1592,7 @@ class TDBench(ImageMCQDataset):
 
         if model == 'exact_matching':
             model = None
-        elif gpt_key_set():
+        elif use_api_judge():
             model = build_judge(**judge_kwargs)
             if not model.working():
                 warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')
@@ -2370,7 +2370,7 @@ class AffordanceDataset(ImageMCQDataset):
 
         if model == 'exact_matching':
             model = None
-        elif gpt_key_set():
+        elif use_api_judge():
             model = build_judge(**judge_kwargs)
             if not model.working():
                 warnings.warn('OPENAI API is not working properly, will use exact matching for evaluation')

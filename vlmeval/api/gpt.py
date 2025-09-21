@@ -92,6 +92,10 @@ class OpenAIWrapper(BaseAPI):
             if key is None:
                 key = env_key
             api_base = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+        elif 'Qwen/Qwen3-30B' in model:
+            key = "vlmevalkit"
+            endpoint = os.environ.get("JUDGE_API_NODE", '0.0.0.0')
+            api_base = f"http://{endpoint}:8000/v1/chat/completions"
         else:
             if use_azure:
                 env_key = os.environ.get('AZURE_OPENAI_API_KEY', None)
@@ -231,7 +235,9 @@ class OpenAIWrapper(BaseAPI):
             resp_struct = json.loads(response.text)
             answer = resp_struct['choices'][0]['message']['content'].strip()
         except Exception as err:
-            if self.verbose:
+            if ret_code == 429 and response.text == "local_rate_limited":
+                print(f"Local Rate Limited")
+            elif self.verbose:
                 self.logger.error(f'{type(err)}: {err}')
                 self.logger.error(response.text if hasattr(response, 'text') else response)
 
