@@ -2266,6 +2266,59 @@ class _3DSRBench(ImageMCQDataset):
         return res_all
 
 
+class MMStarFiltered(ImageMCQDataset):
+    """
+    Filtered MMStar only vision centric categories"""
+    
+  
+    
+    @classmethod
+    def supported_datasets(cls):
+        return ['MMStar_filtered']
+    
+    def __init__(self, dataset='MMStar_filtered', **kwargs):
+        # Load the full MMStar dataset first
+        super().__init__(dataset='MMStar', **kwargs)
+        self.dataset_name = dataset
+        
+    def post_build(self, dataset):
+        """Filter the dataset after building"""
+        target_categories = [
+            'coarse perception',
+            'fine-grained perception',
+            'instance reasoning',
+        ]
+        
+        original_size = len(self.data)
+        print(f"Original MMStar size: {original_size}")
+        print("Available columns:", self.data.columns.tolist())
+        
+        # Show available categories to help debug
+        if 'category' in self.data.columns:
+            print("Available categories:")
+            print(self.data['category'].value_counts())
+            self.data = self.data[self.data['category'].isin(target_categories)]
+        elif 'l2-category' in self.data.columns:
+            print("Available l2-categories:")
+            print(self.data['l2-category'].value_counts())
+            self.data = self.data[self.data['l2-category'].isin(target_categories)]
+        else:
+            print("No standard category column found. Sample data:")
+            print(self.data.head(3))
+            # You might need to adjust the column name based on what you see
+        
+        # Reset index after filtering
+        self.data = self.data.reset_index(drop=True)
+        self.data['index'] = [str(i) for i in range(len(self.data))]
+        
+        filtered_size = len(self.data)
+        print(f"Filtered MMStar size: {filtered_size}")
+        print(f"Reduction: {original_size - filtered_size} samples removed")
+        print('--------------------------------')
+        print('NEW Available categories:')
+        print(self.data['category'].value_counts())
+        
+
 class AffordanceDataset(ImageMCQDataset):
     DATASET_URL = {'A4Bench': "http://opencompass.openxlab.space/utils/VLMEval/A4Bench.tsv"}
     DATASET_MD5 = {'A4Bench': "7c0dc90e8c03e67ff937f3abb4a3fffb"}
