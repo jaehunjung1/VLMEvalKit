@@ -73,7 +73,6 @@ class BaseAPI:
         retry = 5
         while retry > 0:
             ret = self.generate('hello')
-            # import ipdb; ipdb.set_trace()
             if ret is not None and ret != '' and self.fail_msg not in ret:
                 if self.old_timeout is not None:
                     self.timeout = self.old_timeout
