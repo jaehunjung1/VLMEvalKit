@@ -1292,10 +1292,10 @@ qwen2vl_series = {
                 ),
     ),
     'VLAA-Thinker-Qwen2.5VL-7B': partial(
-        VLAAThinkerChat, 
-        model_path='UCSC-VLAA/VLAA-Thinker-Qwen2.5VL-7B', 
-        min_pixels=1280*28*28, 
-        max_pixels=16384*28*28, 
+        VLAAThinkerChat,
+        model_path='UCSC-VLAA/VLAA-Thinker-Qwen2.5VL-7B',
+        min_pixels=1280*28*28,
+        max_pixels=16384*28*28,
         use_custom_prompt=False,
         post_process=True, # post processing for evaluation
         system_prompt=(''
@@ -1519,6 +1519,26 @@ vllm_series = {
         wait=5,
         timeout=300,
         verbose=False,
+    ),
+    'VLAA-Thinker-Qwen2.5VL-7B-VLLM': partial(
+        Qwen2VLReasoningVLLM,
+        model_name='VLAA-Thinker-Qwen2.5VL-7B-VLLM',
+        api_base=vllm_api_base,
+        min_pixels=1280 * 28 * 28,
+        max_pixels=16384 * 28 * 28,
+        max_tokens=8192,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=300,
+        system_prompt=(''
+                       "You are VL-Thinking🤔, a helpful assistant with excellent reasoning ability."
+                       " A user asks you a question, and you should try to solve it."
+                       " You should first think about the reasoning process in the mind and then provides the user with the answer."
+                       " The reasoning process and answer are enclosed within <think> </think> and"
+                       "<answer> </answer> tags, respectively, i.e., <think> reasoning process here </think>"
+                       "<answer> answer here </answer>"
+                       ),
     ),
     "lpt2-stage2-sft-dpo": partial(
         Qwen2VLReasoningVLLM,

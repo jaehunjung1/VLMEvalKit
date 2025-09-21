@@ -48,6 +48,8 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 ipdb.set_trace()
                 raise NotImplementedError
             self.full_model_name = model_name
+        elif model_name == "VLAA-Thinker-Qwen2.5VL-7B-VLLM":
+            self.full_model_name = "UCSC-VLAA/VLAA-Thinker-Qwen2.5VL-7B"
         else:
             ipdb.set_trace()
             raise NotImplementedError
@@ -58,6 +60,11 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         self.temperature = temperature
         self.retry, self.wait, self.timeout = retry, wait, timeout
         self.limit_mm_per_prompt = limit_mm_per_prompt
+
+        if "system_prompt" in kwargs:
+            self.config_system_prompt = kwargs.pop("system_prompt")
+        else:
+            self.config_system_prompt = None
 
         self.key = ""  # we won't set key for VLLM server
 
@@ -119,7 +126,9 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         Parse the answer string.
         If not found, return None.
         """
-        if self.model_name in ["ReVisual-R1-VLLM", "MiMo-VL-7B-SFT-VLLM", "MiMo-VL-7B-RL-VLLM"]:
+        if self.model_name in [
+            "ReVisual-R1-VLLM", "MiMo-VL-7B-SFT-VLLM", "MiMo-VL-7B-RL-VLLM", "VLAA-Thinker-Qwen2.5VL-7B-VLLM",
+        ]:
             if "</think>" in generation:
                 answer = generation.split("</think>")[-1].strip()
             elif len(generation) > 3000:
@@ -162,6 +171,18 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                              "here </think> <answer> answer here </answer>. Please answer with the "
                              "full text of the correct option.",
                  }
+            ]
+            messages = [
+                {"role": "system", "content": self._prepare_content_vllm(system_message)},
+                {"role": "user", "content": self._prepare_content_vllm(message)}
+            ]
+
+        elif self.config_system_prompt is not None:
+            system_message = [
+                {
+                    "type": "text",
+                    "value": self.config_system_prompt,
+                }
             ]
             messages = [
                 {"role": "system", "content": self._prepare_content_vllm(system_message)},

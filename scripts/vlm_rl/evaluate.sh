@@ -18,14 +18,14 @@ done
 echo "[INFO] Judge server is ready to accept connections!"
 
 # Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM
-MODEL=MiMo-VL-7B-RL-VLLM
-SAVE_DIR_NAME=MiMo-VL-7B-RL-VLLM
+MODEL=MiMo-VL-7B-SFT-VLLM
+SAVE_DIR_NAME=MiMo-VL-7B-SFT-VLLM
 
 #MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/verl/verl/adaptations/vlm_rl/checkpoints/mixture1_1-kl0.001-ent0/hf_global_step_340
 #SAVE_DIR_NAME=mixture1_1-kl0.001-ent0--hf_global_step_340
 
 # MathVista_MINI, MMMU_Pro_10c, LogicVista, RealWorldQA, HallusionBench
-DATA=MMMU_Pro_10c
+DATA=RealWorldQA
 
 # run evaluation
 cd ../..

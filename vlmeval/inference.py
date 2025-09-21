@@ -35,7 +35,7 @@ def infer_data_api(model, work_dir, model_name, dataset, index_set=None, api_npr
     lt, indices = len(data), list(data['index'])
 
     structs = []
-    for i in range(lt):
+    for i in tqdm(range(lt), desc="Building Prompt"):
         item = data.iloc[i]
         if hasattr(model, 'use_custom_prompt') and model.use_custom_prompt(dataset_name):
             assert hasattr(model, 'build_prompt')
