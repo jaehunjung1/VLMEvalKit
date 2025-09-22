@@ -66,7 +66,6 @@ def infer_data_api(model, work_dir, model_name, dataset, index_set=None, api_npr
 
     structs = [s for i, s in zip(indices, structs) if i not in res]
     indices = [i for i in indices if i not in res]
-
     gen_func = model.generate
     structs = [dict(message=struct, dataset=dataset_name) for struct in structs]
 
@@ -124,7 +123,7 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
     model = supported_VLM[model_name](**kwargs) if isinstance(model, str) else model
     if ws_bak:
         os.environ['WORLD_SIZE'] = ws_bak
-
+    
     is_api = getattr(model, 'is_api', False)
     if is_api:
         lt, indices = len(data), list(data['index'])

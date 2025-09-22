@@ -257,6 +257,7 @@ def main():
         eval_id = f"T{date}_G{commit_id}"
 
         if Path(model_name).exists():
+            print(f"Local model: {model_name}")
             # local model
             assert args.save_dir_name is not None, '--save_dir_name should be set when using local checkpoint'
             pred_root = osp.join(args.work_dir, args.save_dir_name, eval_id)
@@ -265,7 +266,34 @@ def main():
             prev_pred_roots = ls(osp.join(args.work_dir, args.save_dir_name), mode='dir')
 
             is_local_model = True
-
+            
+            #------
+            from functools import partial
+        
+            from vlmeval.api.vllm_qwen2_vl_reasoning import Qwen2VLReasoningVLLM
+            
+            vllm_api_base = os.environ.get("VLLM_API_BASE", "http://0.0.0.0:5000/v1/")
+            
+            # Register the custom model with the path as the model name
+            
+            if model_name not in supported_VLM:
+                # model_name_id=model_name.replace('/', '__')
+                supported_VLM[model_name] = partial(
+                    Qwen2VLReasoningVLLM,
+                    model_name=model_name,
+                    api_base=vllm_api_base,
+                    min_pixels=512 * 28 * 28,
+                    max_pixels=512 * 28 * 28,
+                    max_tokens=4096,
+                    temperature=0.,
+                    retry=10,
+                    wait=5,
+                    timeout=300,
+                    verbose=False,
+                    custom_model=model_name,
+                )
+                print(f"Registered custom model '{model_name}' with Qwen2VLReasoningVLLM")
+            
         else:
             # HF checkpoint
             pred_root = osp.join(args.work_dir, model_name, eval_id)

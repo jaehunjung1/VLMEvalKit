@@ -244,7 +244,6 @@ class BaseAPI:
         # a very small random delay [0s - 0.5s]
         T = rd.random() * 0.5
         time.sleep(T)
-
         for i in range(self.retry):
             try:
                 ret_code, answer, log = self.generate_inner(message, **kwargs)

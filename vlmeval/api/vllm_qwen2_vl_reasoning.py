@@ -31,6 +31,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                  **kwargs):
 
         self.model_name = model_name
+        self.custom_lpt2_model = False
         self.project_name = None
         if model_name == "ReVisual-R1-VLLM":
             self.full_model_name = "csfufu/Revisual-R1-final"
@@ -44,10 +45,16 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             # local checkpoint
             if "vlm_rl" in model_name:
                 self.project_name = "vlm_rl"
+                self.full_model_name = model_name
             else:
-                ipdb.set_trace()
-                raise NotImplementedError
-            self.full_model_name = model_name
+                custom_model= kwargs.get('custom_model', None)
+                if custom_model:
+                    self.full_model_name = model_name
+                    self.custom_lpt2_model = True
+                else:
+                    ipdb.set_trace()
+                    raise NotImplementedError
+            
         else:
             ipdb.set_trace()
             raise NotImplementedError
@@ -127,7 +134,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 answer = generation[-3000:]
             else:
                 answer = ""
-        elif self.model_name.startswith("lpt2-"):
+        elif self.model_name.startswith("lpt2-") or self.custom_lpt2_model:
             if candidates := re.findall(r"<answer>(.+)</answer>", generation):
                 answer = candidates[-1].strip()
             elif len(generation) > 3000:
@@ -150,7 +157,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         return answer
 
     def generate_inner(self, message, **kwargs):
-        if self.model_name.startswith("lpt2-"):
+        if self.model_name.startswith("lpt2-") or self.custom_lpt2_model:
             system_message = [
                 {
                     "type": "text",
@@ -200,11 +207,12 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         )
         if mm_processor_kwargs is not None:
             payload["mm_processor_kwargs"] = mm_processor_kwargs
-
         response = requests.post(
             self.api_base,
             headers=headers, data=json.dumps(payload), timeout=self.timeout * 1.1)
         ret_code = response.status_code
+        
+        print('Error Code: ', ret_code) if ret_code !=200 else None 
         ret_code = 0 if (200 <= int(ret_code) < 300) else ret_code
         answer = self.fail_msg
         try:
