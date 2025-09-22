@@ -941,6 +941,70 @@ class MMERealWorld(ImageMCQDataset):
         dump(rating, tgt_file)
         return rating
 
+class MMERealWorldFiltered(MMERealWorld):
+    """
+    Filtered MMERealWorld for Remote Sensing, Monitoring, and Autonomous Driving categories
+    """
+    
+    @classmethod
+    def supported_datasets(cls):
+        return ['MME-RealWorld-Filtered', 'MME-RealWorld-CN-Filtered', 'MME-RealWorld-Lite-Filtered']
+    
+    def __init__(self, dataset='MME-RealWorld-Filtered', **kwargs):
+        # Map filtered dataset names to original ones
+        dataset_mapping = {
+            'MME-RealWorld-Filtered': 'MME-RealWorld',
+            'MME-RealWorld-CN-Filtered': 'MME-RealWorld-CN', 
+            'MME-RealWorld-Lite-Filtered': 'MME-RealWorld-Lite'
+        }
+        original_dataset = dataset_mapping.get(dataset, 'MME-RealWorld')
+        
+        # Load the full MMERealWorld dataset first
+        super().__init__(dataset=original_dataset, **kwargs)
+        self.dataset_name = dataset
+        
+    def post_build(self, dataset):
+        """Filter the dataset after building"""
+        target_categories = [
+            'Perception/Remote Sensing', 
+            'Perception/Autonomous_Driving', 
+            'Perception/Monitoring',
+            'Reasoning/Autonomous_Driving',
+            'Reasoning/Monitoring',
+            
+        ]
+        
+        original_size = len(self.data)
+        print(f"Original MMERealWorld size: {original_size}")
+        print("Available columns:", self.data.columns.tolist())
+        
+        # Show available categories to help debug
+        if 'category' in self.data.columns:
+            print("Available categories:")
+            print(self.data['category'].value_counts())
+            self.data = self.data[self.data['category'].isin(target_categories)]
+        elif 'l2-category' in self.data.columns:
+            print("Available l2-categories:")
+            print(self.data['l2-category'].value_counts())
+            self.data = self.data[self.data['l2-category'].isin(target_categories)]
+        else:
+            print("No standard category column found. Sample data:")
+            print(self.data.head(3))
+        
+        # Reset index after filtering
+        self.data = self.data.reset_index(drop=True)
+        self.data['index'] = [i for i in range(len(self.data))]
+        
+        filtered_size = len(self.data)
+        print(f"Filtered MMERealWorld size: {filtered_size}")
+        print(f"Reduction: {original_size - filtered_size} samples removed")
+        print('--------------------------------')
+        print('NEW Available categories:')
+        if 'category' in self.data.columns:
+            print(self.data['category'].value_counts())
+        elif 'l2-category' in self.data.columns:
+            print(self.data['l2-category'].value_counts())
+            
 
 class CVBench(ImageMCQDataset):
     """CV-Bench, composed of two sub datasets:
@@ -2309,7 +2373,8 @@ class MMStarFiltered(ImageMCQDataset):
         
         # Reset index after filtering
         self.data = self.data.reset_index(drop=True)
-        self.data['index'] = [str(i) for i in range(len(self.data))]
+        # self.data['index'] = [str(i) for i in range(len(self.data))]
+        self.data['index'] = [i for i in range(len(self.data))]
         
         filtered_size = len(self.data)
         print(f"Filtered MMStar size: {filtered_size}")
