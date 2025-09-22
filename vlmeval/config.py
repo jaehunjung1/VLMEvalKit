@@ -1491,7 +1491,7 @@ vllm_series = {
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         verbose=False,
     ),
     "MiMo-VL-7B-SFT-VLLM": partial(
@@ -1504,7 +1504,7 @@ vllm_series = {
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         verbose=False,
     ),
     "MiMo-VL-7B-RL-VLLM": partial(
@@ -1517,7 +1517,7 @@ vllm_series = {
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         verbose=False,
     ),
     'VLAA-Thinker-Qwen2.5VL-7B-VLLM': partial(
@@ -1530,7 +1530,7 @@ vllm_series = {
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         system_prompt=(''
                        "You are VL-Thinking🤔, a helpful assistant with excellent reasoning ability."
                        " A user asks you a question, and you should try to solve it."
@@ -1550,7 +1550,7 @@ vllm_series = {
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         verbose=False,
     ),
     "lpt2-acc-6632-dpo-130k-sft-247k-checkpoint-250": partial(
@@ -1563,7 +1563,7 @@ vllm_series = {
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         verbose=False,
     ),
     "lpt2-acc-6414-sft-750k-checkpoint-2750": partial(
@@ -1576,7 +1576,7 @@ vllm_series = {
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         verbose=False,
     ),
     "lpt2-dpo_70k-sft_247k-hf_global_step_460": partial(
@@ -1589,7 +1589,7 @@ vllm_series = {
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         verbose=False,
     ),
     "lpt2-stage2_distill72b_671b_v2__sft_docci_objpt_247k_train_acc7511_checkpoint-2900": partial(
@@ -1602,7 +1602,7 @@ vllm_series = {
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         verbose=False,
     ),
     "lpt2-dpo_distill72b_671b_v2__sft_docci_objpt_247k_train_acc7445_acc7589_checkpoint-500": partial(
@@ -1615,7 +1615,7 @@ vllm_series = {
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         verbose=False,
     ),
 }

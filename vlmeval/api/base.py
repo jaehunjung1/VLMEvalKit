@@ -68,7 +68,7 @@ class BaseAPI:
         self.old_timeout = None
         if hasattr(self, 'timeout'):
             self.old_timeout = self.timeout
-            self.timeout = 120
+            self.timeout = 300
 
         retry = 5
         while retry > 0:

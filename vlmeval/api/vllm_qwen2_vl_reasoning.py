@@ -135,7 +135,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 # to reduce length
                 answer = generation[-3000:]
             else:
-                answer = ""
+                answer = generation
         elif self.model_name.startswith("lpt2-"):
             if candidates := re.findall(r"<answer>(.+)</answer>", generation):
                 answer = candidates[-1].strip()
@@ -143,7 +143,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 # to reduce length
                 answer = generation[-3000:]
             else:
-                answer = ""
+                answer = generation
         elif Path(self.model_name).exists() and self.project_name == "vlm_rl":
             # VLM RL models
             if "</think>" in generation:
@@ -152,7 +152,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 # to reduce length
                 answer = generation[-3000:]
             else:
-                answer = ""
+                answer = generation
         else:
             raise NotImplementedError
 

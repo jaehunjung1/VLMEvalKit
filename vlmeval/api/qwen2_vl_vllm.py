@@ -45,7 +45,7 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
 
         self.key = ""  # we won't set key for VLLM server
 
-        OpenAIWrapper.__init__(self, wait=wait, retry=retry, system_prompt=None, verbose=verbose, **kwargs)
+        OpenAIWrapper.__init__(self, wait=wait, retry=retry, system_prompt=None, timeout=timeout, verbose=verbose, **kwargs)
         Qwen2VLPromptMixin.__init__(self, use_custom_prompt=False, **kwargs)
 
         self.api_base = api_base

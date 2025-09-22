@@ -756,6 +756,11 @@ class MMERealWorld(ImageMCQDataset):
             'Respond with only the letter (A, B, C, D, or E) of the correct option. \n'
             'The best answer is:'
         ),
+        'MME-RealWorld-Filtered': (
+            'Select the best answer to the above multiple-choice question based on the image. '
+            'Respond with only the letter (A, B, C, D, or E) of the correct option. \n'
+            'The best answer is:'
+        ),
         'MME-RealWorld-Lite': (
             'Select the best answer to the above multiple-choice question based on the image. '
             'Respond with only the letter (A, B, C, D, or E) of the correct option. \n'
