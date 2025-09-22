@@ -1030,8 +1030,8 @@ class CVBench(ImageMCQDataset):
         data = mcq_vanilla_eval(
             model, data, meta, nproc, result_file, self.dataset_name
         )
-        dump(data, eval_file.replace(f".{suffix}", f"_{model}_result.{suffix}"))
-        data = load(eval_file.replace(f".{suffix}", f"_{model}_result.{suffix}"))
+        dump(data, eval_file.replace(f".{suffix}", f"_{model_name}_result.{suffix}"))
+        data = load(eval_file.replace(f".{suffix}", f"_{model_name}_result.{suffix}"))
 
         if all(data["split"] == "2D"):  # 2D
             acc = self.report_accuracy(data)
@@ -2309,7 +2309,7 @@ class MMStarFiltered(ImageMCQDataset):
         
         # Reset index after filtering
         self.data = self.data.reset_index(drop=True)
-        self.data['index'] = [str(i) for i in range(len(self.data))]
+        self.data['index'] = [i for i in range(len(self.data))]
         
         filtered_size = len(self.data)
         print(f"Filtered MMStar size: {filtered_size}")

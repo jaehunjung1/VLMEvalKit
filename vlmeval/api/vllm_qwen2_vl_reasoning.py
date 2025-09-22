@@ -25,7 +25,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                  temperature: float = 0.01,
                  retry: int = 10,
                  wait: int = 5,
-                 timeout: int = 300,
+                 timeout: int = 600,
                  limit_mm_per_prompt: int = 10,
                  verbose: bool = False,
                  **kwargs):

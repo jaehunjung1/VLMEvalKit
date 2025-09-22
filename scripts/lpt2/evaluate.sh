@@ -2,12 +2,12 @@ export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
 export AZURE_OPENAI_DEPLOYMENT_NAME="gpt-4o-20241120"
 export OPENAI_API_VERSION="2025-02-01-preview"
 
-# Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM
+# Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, VLAA-Thinker-Qwen2.5VL-7B-VLLM
 # custom models: lpt2-stage2-sft-dpo
-MODEL=ReVisual-R1-VLLM
+MODEL=VLAA-Thinker-Qwen2.5VL-7B-VLLM
 
-# VStarBench MMVP RealWorldQA
-DATA="CV-Bench-2D"
+# VStarBench MMVP RealWorldQA CV-Bench-2D MMStar_filtered
+DATA="MMStar_filtered"
 JUDGE=gpt-4o-mini
 
 

@@ -5,8 +5,8 @@
 #MODEL_NAME=Jaehun/lpt2-stage2_distill72b_671b_v2__sft_docci_objpt_247k_train_acc7511_checkpoint-2900
 #MODEL_NAME=Jaehun/lpt2-dpo_distill72b_671b_v2__sft_docci_objpt_247k_train_acc7445_acc7589_checkpoint-500
 #MODEL_NAME=Qwen/Qwen2.5-VL-7B-Instruct
-#MODEL_NAME=UCSC-VLAA/VLAA-Thinker-Qwen2.5VL-7B
-MODEL_NAME=csfufu/Revisual-R1-final
+MODEL_NAME=UCSC-VLAA/VLAA-Thinker-Qwen2.5VL-7B
+#MODEL_NAME=csfufu/Revisual-R1-final
 
 vllm serve $MODEL_NAME --port 8000 --host 0.0.0.0 --dtype bfloat16 --tensor-parallel-size 4 \
 --allowed-local-media-path / --limit-mm-per-prompt '{"image": 16}'
