@@ -156,7 +156,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 answer = generation.split("</think>")[-1].strip()
             elif len(generation) > 3000:
                 # to reduce length
-                answer = generation[-3000:]
+                answer = "(... omitted) " + generation[-1000:]
             else:
                 answer = generation
         else:
