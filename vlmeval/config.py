@@ -1618,7 +1618,40 @@ vllm_series = {
         timeout=3000,
         verbose=False,
     ),
+    "LongPerceptualThought-SFT_then_DPO": partial(
+        Qwen2VLReasoningVLLM,
+        model_name="LongPerceptualThought-SFT_then_DPO",
+        api_base=vllm_api_base,
+        min_pixels=512 * 28 * 28,
+        max_pixels=512 * 28 * 28,
+        max_tokens=4096,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=3000,
+        verbose=False,
+    )
 }
+
+
+lpt2_local_groups = {
+    str(path): partial(
+        Qwen2VLReasoningVLLM,
+        model_name=str(path),
+        api_base=vllm_api_base,
+        min_pixels=512 * 28 * 28,
+        max_pixels=512 * 28 * 28,
+        max_tokens=4096,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=3000,
+        verbose=False,
+    ) for path in (list(Path("/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/").rglob("*/*_checkpoint-*")) +
+                   list(Path("/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/output/stage2").rglob("*/checkpoint-*")))
+
+}
+
 
 vlm_rl_groups = {
     str(path): partial(
@@ -1682,7 +1715,7 @@ model_groups = [
     ross_series, emu_series, ola_series, ursa_series, gemma_series,
     long_vita_series, ristretto_series, kimi_series, aguvis_series, hawkvl_series, 
     flash_vl, kimi_vllm_series, oryx_series,
-    vllm_series, vlm_rl_groups,
+    vllm_series, lpt2_local_groups, vlm_rl_groups,
 ]
 
 for grp in model_groups:

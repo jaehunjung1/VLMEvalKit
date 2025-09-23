@@ -40,10 +40,14 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             self.full_model_name = "XiaomiMiMo/MiMo-VL-7B-RL"
         elif model_name.startswith("lpt2-"):
             self.full_model_name = f"Jaehun/{self.model_name}"
+        elif model_name == "LongPerceptualThought-SFT_then_DPO":
+            self.full_model_name = "andrewliao11/LongPerceptualThought-SFT_then_DPO"
         elif Path(model_name).exists():
             # local checkpoint
             if "vlm_rl" in model_name:
                 self.project_name = "vlm_rl"
+            elif "lptv2" in model_name:
+                self.project_name = "lpt2"
             else:
                 ipdb.set_trace()
                 raise NotImplementedError
@@ -136,7 +140,9 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 answer = generation[-3000:]
             else:
                 answer = generation
-        elif self.model_name.startswith("lpt2-"):
+        elif self.model_name.startswith("lpt2-") or self.model_name in [
+            "LongPerceptualThought-SFT_then_DPO",
+        ] or (Path(self.model_name).exists() and self.project_name == "lpt2"):
             if candidates := re.findall(r"<answer>(.+)</answer>", generation):
                 answer = candidates[-1].strip()
             elif len(generation) > 3000:
@@ -159,7 +165,21 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         return answer
 
     def generate_inner(self, message, **kwargs):
-        if self.model_name.startswith("lpt2-"):
+        if self.config_system_prompt is not None:
+            system_message = [
+                {
+                    "type": "text",
+                    "value": self.config_system_prompt,
+                }
+            ]
+            messages = [
+                {"role": "system", "content": self._prepare_content_vllm(system_message)},
+                {"role": "user", "content": self._prepare_content_vllm(message)}
+            ]
+
+        elif self.model_name.startswith("lpt2-") or self.model_name in [
+            "LongPerceptualThought-SFT_then_DPO",
+        ] or (Path(self.model_name).exists() and self.project_name == "lpt2"):
             system_message = [
                 {
                     "type": "text",
@@ -171,18 +191,6 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                              "here </think> <answer> answer here </answer>. Please answer with the "
                              "full text of the correct option.",
                  }
-            ]
-            messages = [
-                {"role": "system", "content": self._prepare_content_vllm(system_message)},
-                {"role": "user", "content": self._prepare_content_vllm(message)}
-            ]
-
-        elif self.config_system_prompt is not None:
-            system_message = [
-                {
-                    "type": "text",
-                    "value": self.config_system_prompt,
-                }
             ]
             messages = [
                 {"role": "system", "content": self._prepare_content_vllm(system_message)},
