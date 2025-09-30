@@ -2576,7 +2576,7 @@ class PhyX(ImageBaseDataset):
     # It returns a DataFrame
     @classmethod
     def evaluate(self, eval_file, **judge_kwargs):
-        valid_type = judge_kwargs["valid_type"]
+        valid_type = judge_kwargs.get("valid_type", "LLM")
         assert valid_type in ["STR", "LLM"], print(
             "To evaluate PhyX, you need to set valid_type in judge-args, STR for string level and LLM for LLM."
             " Please add: --judge-args '{\"valid_type\": \"STR\"}' or add: "

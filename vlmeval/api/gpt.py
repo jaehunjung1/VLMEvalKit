@@ -92,7 +92,7 @@ class OpenAIWrapper(BaseAPI):
             if key is None:
                 key = env_key
             api_base = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
-        elif 'Qwen/Qwen3-30B' in model:
+        elif 'Qwen3-30B' in model or 'Qwen3-32B' in model:
             key = "vlmevalkit"
             endpoint = os.environ.get("JUDGE_API_NODE", '0.0.0.0')
             api_base = f"http://{endpoint}:8000/v1/chat/completions"

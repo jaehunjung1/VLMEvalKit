@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import ipdb
+
 from vlmeval.vlm import *
 from vlmeval.api import *
 from functools import partial
@@ -1500,7 +1502,7 @@ vllm_series = {
         api_base=vllm_api_base,
         min_pixels=1280 * 28 * 28,
         max_pixels=16384 * 28 * 28,
-        max_tokens=8192,
+        max_tokens=16384,
         temperature=0.,
         retry=10,
         wait=5,
@@ -1513,7 +1515,7 @@ vllm_series = {
         api_base=vllm_api_base,
         min_pixels=1280 * 28 * 28,
         max_pixels=16384 * 28 * 28,
-        max_tokens=8192,
+        max_tokens=16384,
         temperature=0.,
         retry=10,
         wait=5,
@@ -1666,8 +1668,8 @@ vlm_rl_groups = {
         wait=5,
         timeout=300,
         verbose=False,
-    ) for path in Path("/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/"
-                       "jaehunj/verl/verl/adaptations/vlm_rl/checkpoints").rglob("*/hf_global_step_*")
+    ) for path in Path("/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/verl/verl-projects/vlm_rl/"
+                       "checkpoints/").rglob("*/hf_global_step_*")
 }
 
 # recommend: vllm serve moonshotai/Kimi-VL-A3B-Thinking-2506 
