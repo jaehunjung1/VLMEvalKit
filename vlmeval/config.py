@@ -1662,11 +1662,11 @@ vlm_rl_groups = {
         api_base=vllm_api_base,
         min_pixels=1280 * 28 * 28,
         max_pixels=2560 * 28 * 28,
-        max_tokens=8192,
+        max_tokens=16384,
         temperature=0.,
         retry=10,
         wait=5,
-        timeout=300,
+        timeout=3000,
         verbose=False,
     ) for path in Path("/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/verl/verl-projects/vlm_rl/"
                        "checkpoints/").rglob("*/hf_global_step_*")
