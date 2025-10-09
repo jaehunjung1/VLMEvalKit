@@ -1,6 +1,6 @@
 # === using VLLM local API === #
 export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
-export JUDGE_API_NODE="pool0-03435"  # todo
+export JUDGE_API_NODE="pool0-02294"  # todo
 JUDGE=Qwen3-30B-A3B-Instruct-2507
 
 # wait until inference & judge server is ready
@@ -18,11 +18,11 @@ done
 echo "[INFO] Judge server is ready to accept connections!"
 
 # Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM
-#MODEL=MiMo-VL-7B-SFT-VLLM
-#SAVE_DIR_NAME=MiMo-VL-7B-SFT-VLLM
+#MODEL=MiMo-VL-7B-RL-VLLM
+#SAVE_DIR_NAME=MiMo-VL-7B-RL-VLLM
 
-MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/verl/verl-projects/vlm_rl/checkpoints/physreason-ugphysics-l16k/hf_global_step_40
-SAVE_DIR_NAME=physreason-ugphysics-l16k--hf_global_step_40
+MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/verl/verl-projects/vlm_rl/checkpoints/physreason-ugphysics-rpp-l32k/hf_global_step_70
+SAVE_DIR_NAME=physreason-ugphysics-rpp-l32k--hf_global_step_70
 
 # MathVista_MINI WeMath MMMU_Pro_10c PhyX_mini_MC VisuLogic LogicVista RealWorldQA HallusionBench
 DATA=PhyX_mini_MC
