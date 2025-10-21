@@ -32,6 +32,8 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
             self.full_model_name = "Qwen/Qwen2.5-VL-3B-Instruct"
         elif model_name == "Qwen2.5-VL-7B-VLLM":
             self.full_model_name = "Qwen/Qwen2.5-VL-7B-Instruct"
+        elif model_name == "Qwen3-VL-8B-Instruct-VLLM":
+            self.full_model_name = "Qwen/Qwen3-VL-8B-Instruct"
         else:
             ipdb.set_trace()
             raise NotImplementedError

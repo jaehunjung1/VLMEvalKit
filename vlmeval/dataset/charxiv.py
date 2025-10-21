@@ -1,6 +1,8 @@
 import os
 import json
 from typing import Dict, List, Tuple, Any, Union
+
+import ipdb
 import pandas as pd
 import warnings
 
@@ -23,7 +25,7 @@ def auxeval(judge_model: Any, line: pd.Series, **kwargs: Any) -> Dict[str, Any]:
         Dict containing evaluation results with extract_answer and score
     """
     failure_result = {"extract_answer": "Failed to parse response", "score": 0.0}
-    prompt = line["grading_query"].replace("{PREDICTION}", line["prediction"])
+    prompt = line["grading_query"].replace("{PREDICTION}", str(line["prediction"]))
 
     retry = kwargs.get("retry", 10)
     max_tokens = kwargs.get("max_tokens", 256)
@@ -199,8 +201,9 @@ class CharXiv(ImageBaseDataset):
                 f"The judge_model '{judge_model}' is not gpt-4o-mini. Evaluation results may not be accurate."
             )
 
-        judge_model = build_judge(model=judge_model, **judge_kwargs)
-        judge_model_name = judge_model.model
+        # judge_model = build_judge(model=judge_model, **judge_kwargs)
+        judge_model = build_judge(**judge_kwargs)
+        judge_model_name = judge_kwargs.get('model', None)
 
         # Define file paths
         suffix = eval_file.split(".")[-1]

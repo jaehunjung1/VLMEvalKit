@@ -1,6 +1,6 @@
 # === using VLLM local API === #
 export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
-export JUDGE_API_NODE="pool0-03002"  # todo
+export JUDGE_API_NODE="pool0-01435"  # todo
 JUDGE=Qwen3-30B-A3B-Instruct-2507
 
 # wait until inference & judge server is ready
@@ -17,21 +17,21 @@ while ! nc -z $JUDGE_API_NODE 8000; do
 done
 echo "[INFO] Judge server is ready to accept connections!"
 
-# Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM
-#MODEL=MiMo-VL-7B-RL-VLLM
-#SAVE_DIR_NAME=MiMo-VL-7B-RL-VLLM
+# Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, Qwen3-VL-8B-Instruct-VLLM
+MODEL=Qwen3-VL-8B-Instruct-VLLM
+SAVE_DIR_NAME=Qwen3-VL-8B-Instruct-VLLM
 
-MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/verl/verl-projects/vlm_rl/checkpoints/physics_v3-l32k/hf_global_step_160
-SAVE_DIR_NAME=physics_v3-l32k--hf_global_step_160
+#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/verl/verl-projects/vlm_rl/checkpoints/physics_v3-l32k/hf_global_step_160
+#SAVE_DIR_NAME=physics_v3-l32k--hf_global_step_160
 
 # MathVista_MINI WeMath MMMU_Pro_10c PhyX_mini_MC VisuLogic LogicVista RealWorldQA HallusionBench
-DATA=PhyX_mini_MC
+DATA=CharXiv_reasoning_val
 
 # run evaluation
 cd ../..
 python run.py --data $DATA --save_dir_name $SAVE_DIR_NAME \
 --model $MODEL --infer-api-nproc 512 --infer-retry 3 \
---judge $JUDGE --judge-api-nproc 512 --judge-retry 10 --work-dir "./outputs/vlm_rl" \
+--judge $JUDGE --judge-api-nproc 512 --judge-retry 10 --work-dir "./outputs/lpt3" \
 --reuse --verbose
 
 

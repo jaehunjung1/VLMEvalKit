@@ -140,6 +140,12 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 answer = generation[-3000:]
             else:
                 answer = generation
+        elif self.model_name in ["Qwen3-VL-8B-Instruct-VLLM"]:
+            if len(generation) > 3000:
+                # to reduce length
+                answer = generation[-3000:]
+            else:
+                answer = generation
         elif self.model_name.startswith("lpt2-") or self.model_name in [
             "LongPerceptualThought-SFT_then_DPO",
         ] or (Path(self.model_name).exists() and self.project_name == "lpt2"):

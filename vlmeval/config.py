@@ -1483,6 +1483,19 @@ vllm_series = {
         timeout=300,
         verbose=False,
     ),
+    "Qwen3-VL-8B-Instruct-VLLM": partial(
+        Qwen2VLVLLM,
+        model_name="Qwen3-VL-8B-Instruct-VLLM",
+        api_base=vllm_api_base,
+        min_pixels=1280 * 28 * 28,
+        max_pixels=16384 * 28 * 28,
+        max_tokens=8192,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=300,
+        verbose=False,
+    ),
     "ReVisual-R1-VLLM": partial(
         Qwen2VLReasoningVLLM,
         model_name="ReVisual-R1-VLLM",
@@ -1636,23 +1649,23 @@ vllm_series = {
 }
 
 lpt2_local_groups = {}
-lpt2_local_groups = {
-    str(path): partial(
-        Qwen2VLReasoningVLLM,
-        model_name=str(path),
-        api_base=vllm_api_base,
-        min_pixels=512 * 28 * 28,
-        max_pixels=512 * 28 * 28,
-        max_tokens=4096,
-        temperature=0.,
-        retry=10,
-        wait=5,
-        timeout=3000,
-        verbose=False,
-    ) for path in (list(Path("/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/").rglob("*/*_checkpoint-*")) +
-                   list(Path("/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/output/stage2").rglob("*/checkpoint-*")))
-
-}
+# lpt2_local_groups = {
+#     str(path): partial(
+#         Qwen2VLReasoningVLLM,
+#         model_name=str(path),
+#         api_base=vllm_api_base,
+#         min_pixels=512 * 28 * 28,
+#         max_pixels=512 * 28 * 28,
+#         max_tokens=4096,
+#         temperature=0.,
+#         retry=10,
+#         wait=5,
+#         timeout=3000,
+#         verbose=False,
+#     ) for path in (list(Path("/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/").rglob("*/*_checkpoint-*")) +
+#                    list(Path("/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/output/stage2").rglob("*/checkpoint-*")))
+#
+# }
 
 
 vlm_rl_groups = {
