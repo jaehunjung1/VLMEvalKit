@@ -1,6 +1,6 @@
 # === using VLLM local API === #
 export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
-export JUDGE_API_NODE="pool0-01435"  # todo
+export JUDGE_API_NODE="pool0-01519"  # todo
 JUDGE=Qwen3-30B-A3B-Instruct-2507
 
 # wait until inference & judge server is ready
@@ -21,8 +21,8 @@ echo "[INFO] Judge server is ready to accept connections!"
 #MODEL=Qwen3-VL-8B-Instruct-VLLM
 #SAVE_DIR_NAME=Qwen3-VL-8B-Instruct-VLLM
 
-MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/qwen3_7b--v2_charts--lr5e-6/checkpoint-500
-SAVE_DIR_NAME=qwen3_7b--v2_charts--lr5e-6--checkpoint-500
+MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/qwen3_7b--v2_charts--lr5e-6/checkpoint-1000
+SAVE_DIR_NAME=qwen3_7b--v2_charts--lr5e-6--checkpoint-1000
 
 # MathVista_MINI WeMath MMMU_Pro_10c PhyX_mini_MC VisuLogic LogicVista RealWorldQA HallusionBench
 DATA=CharXiv_reasoning_val
