@@ -3,11 +3,10 @@ export AZURE_OPENAI_DEPLOYMENT_NAME="gpt-4o-20241120"
 export OPENAI_API_VERSION="2025-02-01-preview"
 
 # Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, VLAA-Thinker-Qwen2.5VL-7B-VLLM
-# custom models: lpt2-stage2-sft-dpo
-#MODEL=LongPerceptualThought-SFT_then_DPO
+MODEL=Qwen3-VL-8B-Instruct-VLLM
 
-MODEL=/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/output/stage2/sft_stage2_fixeval_harden_qwen_distill72b_qwen_v2_objpt_750k/checkpoint-6550
-SAVE_DIR_NAME=sft_stage2_fixeval_harden_qwen_distill72b_qwen_v2_objpt_750k_checkpoint-6550
+#MODEL=/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/output/stage2/sft_stage2_fixeval_harden_qwen_distill72b_qwen_v2_objpt_750k/checkpoint-6550
+#SAVE_DIR_NAME=sft_stage2_fixeval_harden_qwen_distill72b_qwen_v2_objpt_750k_checkpoint-6550
 
 # VStarBench MMVP RealWorldQA CV-Bench-2D CV-Bench-3D MMStar_filtered MME-RealWorld-Filtered
 DATA="VStarBench MMVP RealWorldQA CV-Bench-2D CV-Bench-3D MMStar_filtered"
