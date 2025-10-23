@@ -1667,6 +1667,22 @@ lpt2_local_groups = {}
 #
 # }
 
+lpt3_groups = {
+    str(path): partial(
+        Qwen2VLReasoningVLLM,
+        model_name=str(path),
+        api_base=vllm_api_base,
+        min_pixels=1280 * 28 * 28,
+        max_pixels=16384 * 28 * 28,
+        max_tokens=32768,
+        temperature=0.,
+        retry=10,
+        wait=5,
+        timeout=3000,
+        verbose=False,
+    ) for path in Path("/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/"
+                       "checkpoints/").glob("*/checkpoint-*")
+}
 
 vlm_rl_groups = {
     str(path): partial(
@@ -1730,7 +1746,7 @@ model_groups = [
     ross_series, emu_series, ola_series, ursa_series, gemma_series,
     long_vita_series, ristretto_series, kimi_series, aguvis_series, hawkvl_series, 
     flash_vl, kimi_vllm_series, oryx_series,
-    vllm_series, lpt2_local_groups, vlm_rl_groups,
+    vllm_series, lpt2_local_groups, vlm_rl_groups, lpt3_groups,
 ]
 
 for grp in model_groups:

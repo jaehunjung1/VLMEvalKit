@@ -48,6 +48,8 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 self.project_name = "vlm_rl"
             elif "lptv2" in model_name:
                 self.project_name = "lpt2"
+            elif "lpt3-sft" in model_name:
+                self.project_name = "lpt3"
             else:
                 ipdb.set_trace()
                 raise NotImplementedError
@@ -165,6 +167,17 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 answer = "(... omitted) " + generation[-1000:]
             else:
                 answer = generation
+        elif Path(self.model_name).exists() and self.project_name == "lpt3":
+            # LPT3 models
+            if "Final Answer:" in generation:
+                answer = generation.split("Final Answer:")[-1].strip()
+            elif "</think>" in generation:
+                answer = generation.split("</think>")[-1].strip()
+            elif len(generation) > 3000:
+                # to reduce length
+                answer = "(... omitted) " + generation[-3000:]
+            else:
+                answer = generation
         else:
             raise NotImplementedError
 
@@ -203,11 +216,24 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 {"role": "user", "content": self._prepare_content_vllm(message)}
             ]
 
-        else:
+        elif Path(self.model_name).exists() and self.project_name == "lpt3":
+            # message = [
+            #     {'type': 'image', 'value': '/root/lustre/verl/LMUData/images/CharXiv_reasoning_val/images/7.jpg'},
+            #     {'type': 'text', 'value': 'Which city experiences the most "zig-zagging" in stay at home rates with respect to the number of daily new confirmed Covid-19 cases?'}]
+            # ipdb.set_trace()
+            # pass
+            auxiliary_instruction = ("* Your final answer must be grounded to some text that is explicitly written and relevant to the question in the chart.\n    "
+                                     "* If you need to answer multiple terms, separate them with commas.\n    "
+                                     "* Unless specified in the question (such as answering with a letter), you are required to answer the full names of subplots and/or labels by default.\n")
+            message[1]['value'] = message[1]['value'].split(auxiliary_instruction)[0].strip()
             messages = [
                 {"role": "user", "content": self._prepare_content_vllm(message)}
             ]
 
+        else:
+            messages = [
+                {"role": "user", "content": self._prepare_content_vllm(message)}
+            ]
 
         mm_processor_kwargs = None
         for item in messages[0]['content']:

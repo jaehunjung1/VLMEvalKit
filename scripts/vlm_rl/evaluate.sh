@@ -1,6 +1,6 @@
 # === using VLLM local API === #
 export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
-export JUDGE_API_NODE="pool0-03002"  # todo
+export JUDGE_API_NODE="pool0-01438"  # todo
 JUDGE=Qwen3-30B-A3B-Instruct-2507
 
 # wait until inference & judge server is ready
@@ -21,8 +21,8 @@ echo "[INFO] Judge server is ready to accept connections!"
 #MODEL=MiMo-VL-7B-RL-VLLM
 #SAVE_DIR_NAME=MiMo-VL-7B-RL-VLLM
 
-MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/verl/verl-projects/vlm_rl/checkpoints/physics_v3-l32k/hf_global_step_160
-SAVE_DIR_NAME=physics_v3-l32k--hf_global_step_160
+MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/verl/verl-projects/vlm_rl/checkpoints/physics_v3-l32k/hf_global_step_240
+SAVE_DIR_NAME=physics_v3-l32k--hf_global_step_240
 
 # MathVista_MINI WeMath MMMU_Pro_10c PhyX_mini_MC VisuLogic LogicVista RealWorldQA HallusionBench
 DATA=PhyX_mini_MC

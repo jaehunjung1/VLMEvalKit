@@ -18,11 +18,11 @@ done
 echo "[INFO] Judge server is ready to accept connections!"
 
 # Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, Qwen3-VL-8B-Instruct-VLLM
-MODEL=Qwen3-VL-8B-Instruct-VLLM
-SAVE_DIR_NAME=Qwen3-VL-8B-Instruct-VLLM
+#MODEL=Qwen3-VL-8B-Instruct-VLLM
+#SAVE_DIR_NAME=Qwen3-VL-8B-Instruct-VLLM
 
-#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/verl/verl-projects/vlm_rl/checkpoints/physics_v3-l32k/hf_global_step_160
-#SAVE_DIR_NAME=physics_v3-l32k--hf_global_step_160
+MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/qwen3_7b--v2_charts--lr5e-6/checkpoint-500
+SAVE_DIR_NAME=qwen3_7b--v2_charts--lr5e-6--checkpoint-500
 
 # MathVista_MINI WeMath MMMU_Pro_10c PhyX_mini_MC VisuLogic LogicVista RealWorldQA HallusionBench
 DATA=CharXiv_reasoning_val
