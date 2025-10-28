@@ -46,7 +46,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             # local checkpoint
             if "vlm_rl" in model_name:
                 self.project_name = "vlm_rl"
-            elif "lptv2" in model_name:
+            elif "lptv2" in model_name or "lpt2" in model_name:
                 self.project_name = "lpt2"
             elif "lpt3-sft" in model_name:
                 self.project_name = "lpt3"

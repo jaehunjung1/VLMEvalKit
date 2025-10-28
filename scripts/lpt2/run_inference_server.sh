@@ -8,13 +8,14 @@
 #MODEL_NAME=/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/output/stage2/dpo_stage_2_fixeval_sft_stage2_fixeval_combined_harden_distill72b_671b_v2_objpt_750k_acc_6766_checkpoint-2500/checkpoint-750
 #MODEL_NAME=/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/output/stage2/sft_stage2_fixeval_combined_harden_distill72b_671b_v2_objpt_750k/checkpoint-4100
 #MODEL_NAME=/lustre/fsw/portfolios/nvr/users/dacunamarrer/lptv2/output/stage2/sft_stage2_fixeval_harden_qwen_distill72b_qwen_v2_objpt_750k/checkpoint-6550
+MODEL_NAME=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/models/lpt2/7B-acc68-sft-dpo-max-ckpt
 
 #MODEL_NAME=andrewliao11/LongPerceptualThought-SFT_then_DPO
 #MODEL_NAME=Qwen/Qwen2.5-VL-7B-Instruct
 #MODEL_NAME=UCSC-VLAA/VLAA-Thinker-Qwen2.5VL-7B
 #MODEL_NAME=csfufu/Revisual-R1-final
 #MODEL_NAME=XiaomiMiMo/MiMo-VL-7B-SFT
-MODEL_NAME=Qwen/Qwen3-VL-8B-Instruct
+#MODEL_NAME=Qwen/Qwen3-VL-8B-Instruct
 
 
 vllm serve $MODEL_NAME --port 8000 --host 0.0.0.0 --dtype bfloat16 --tensor-parallel-size 4 --max-model-len 20k \
