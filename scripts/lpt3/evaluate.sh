@@ -31,7 +31,7 @@ DATA=CharXiv_reasoning_val
 cd ../..
 python run.py --data $DATA --save_dir_name $SAVE_DIR_NAME \
 --model $MODEL --infer-api-nproc 512 --infer-retry 3 \
---judge $JUDGE --judge-api-nproc 512 --judge-retry 10 --work-dir "./outputs/lpt3" \
+--judge $JUDGE --judge-api-nproc 128 --judge-retry 10 --work-dir "./outputs/lpt3" \
 --reuse --verbose
 
 
