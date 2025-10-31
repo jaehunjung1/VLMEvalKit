@@ -5,8 +5,8 @@ export OPENAI_API_VERSION="2025-02-01-preview"
 # Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, VLAA-Thinker-Qwen2.5VL-7B-VLLM
 #MODEL=Qwen3-VL-8B-Instruct-VLLM
 
-MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/models/lpt2/7B-acc68-sft-dpo-max-ckpt
-SAVE_DIR_NAME=7B-acc68-sft-dpo-max-ckpt
+MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/models/lpt2/Qwen3-8b-Ins-sft-dpo-lgt-acc66
+SAVE_DIR_NAME=Qwen3-8b-Ins-sft-dpo-lgt-acc66
 
 # VStarBench MMVP RealWorldQA CV-Bench-2D CV-Bench-3D MMStar_filtered MME-RealWorld-Filtered
 DATA="VStarBench MMVP RealWorldQA CV-Bench-2D CV-Bench-3D MMStar_filtered"
