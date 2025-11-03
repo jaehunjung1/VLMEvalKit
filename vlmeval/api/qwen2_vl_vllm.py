@@ -34,6 +34,8 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
             self.full_model_name = "Qwen/Qwen2.5-VL-7B-Instruct"
         elif model_name == "Qwen3-VL-8B-Instruct-VLLM":
             self.full_model_name = "Qwen/Qwen3-VL-8B-Instruct"
+        elif model_name == "Qwen3-VL-8B-Thinking-VLLM":
+            self.full_model_name = "Qwen/Qwen3-VL-8B-Thinking"
         else:
             ipdb.set_trace()
             raise NotImplementedError
@@ -48,7 +50,7 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
         self.key = ""  # we won't set key for VLLM server
 
         OpenAIWrapper.__init__(self, wait=wait, retry=retry, system_prompt=None, timeout=timeout, verbose=verbose, **kwargs)
-        Qwen2VLPromptMixin.__init__(self, use_custom_prompt=False, **kwargs)
+        Qwen2VLPromptMixin.__init__(self, use_custom_prompt=True, **kwargs)
 
         self.api_base = api_base
         self.client = OpenAI(

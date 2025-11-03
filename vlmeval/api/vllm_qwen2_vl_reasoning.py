@@ -1,5 +1,6 @@
 import json
 import re
+import string
 from pathlib import Path
 
 import ipdb
@@ -38,6 +39,8 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             self.full_model_name = "XiaomiMiMo/MiMo-VL-7B-SFT"
         elif model_name == "MiMo-VL-7B-RL-VLLM":
             self.full_model_name = "XiaomiMiMo/MiMo-VL-7B-RL"
+        elif model_name == "NVIDIA-Nemotron-Nano-12B-v2-VL-BF16":
+            self.full_model_name = "nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16"
         elif model_name.startswith("lpt2-"):
             self.full_model_name = f"Jaehun/{self.model_name}"
         elif model_name == "LongPerceptualThought-SFT_then_DPO":
@@ -84,6 +87,47 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         )
 
         self.logger.info(f'Model: {self.full_model_name}; Using API Base: {self.api_base}')
+
+    def use_custom_prompt(self, dataset: str) -> bool:
+        # overriding Qwen2VLPromptMixing depending on the model
+        if self.project_name == "lpt3":
+            if dataset == "RealWorldQA":
+                return True
+            elif "CharXiv" in dataset:
+                return True
+            else:
+                ipdb.set_trace()  # todo see if we need custom prompt
+                pass
+        else:
+            return super().use_custom_prompt(dataset)
+
+    def build_prompt(self, line, dataset: str) -> list[dict[str, str]]:
+        import pandas as pd
+
+        if self.project_name == "lpt3":
+            if dataset == "RealWorldQA":
+                # reference: Qwen2VLPromptMixin - build_mcq_prompt
+                question = line['question']
+                option_names = [name for name in string.ascii_uppercase if name in line and not pd.isna(line[name])]
+                options_str = "\n".join(f"{option_name}. {line[option_name]}" for option_name in option_names)
+                prompt = f"{question}\n{options_str}".strip()
+
+                image_path = self.dump_image(line, dataset)
+
+                msgs = []
+                if isinstance(image_path, list):
+                    msgs.extend([dict(type='image', value=p) for p in image_path])
+                else:
+                    msgs = [dict(type='image', value=image_path)]
+                msgs.append(dict(type='text', value=prompt))
+
+                return msgs
+
+            else:
+                ipdb.set_trace()  # todo implement custom prompt for other dataset
+                pass
+        else:
+            return super().build_prompt(line, dataset)
 
     def _prepare_content_vllm(self, inputs: list[dict[str, str]], dataset: str | None = None) -> list[dict[str, str]]:
         """
@@ -134,6 +178,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         """
         if self.model_name in [
             "ReVisual-R1-VLLM", "MiMo-VL-7B-SFT-VLLM", "MiMo-VL-7B-RL-VLLM", "VLAA-Thinker-Qwen2.5VL-7B-VLLM",
+            "NVIDIA-Nemotron-Nano-12B-v2-VL-BF16",
         ]:
             if "</think>" in generation:
                 answer = generation.split("</think>")[-1].strip()
@@ -254,7 +299,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             messages=messages,
             n=1,
             temperature=temperature,
-            top_p=0.001,
+            top_p=0.95,
             top_k=1,
             repetition_penalty=1.0,
             max_tokens=max_tokens,
