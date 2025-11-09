@@ -1,6 +1,6 @@
 # === using VLLM local API === #
 export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
-export JUDGE_API_NODE="pool0-02143"  # todo
+export JUDGE_API_NODE="pool0-01438"  # todo
 JUDGE=Qwen3-30B-A3B-Instruct-2507
 
 # wait until inference & judge server is ready
@@ -18,14 +18,14 @@ done
 echo "[INFO] Judge server is ready to accept connections!"
 
 # Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, Qwen3-VL-8B-Instruct-VLLM, Qwen3-VL-8B-Thinking-VLLM, NVIDIA-Nemotron-Nano-12B-v2-VL-BF16
-MODEL=NVIDIA-Nemotron-Nano-12B-v2-VL-BF16
-SAVE_DIR_NAME=NVIDIA-Nemotron-Nano-12B-v2-VL-BF16
+MODEL=Qwen3-VL-8B-Thinking-VLLM
+SAVE_DIR_NAME=Qwen3-VL-8B-Thinking-VLLM
 
-#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/realworld_qa--v2_realworld_qa--curate-rwqa_v1--lr5e-6/checkpoint-500
-#SAVE_DIR_NAME=realworld_qa--v2_realworld_qa--curate-rwqa_v1--lr5e-6--checkpoint-500
+#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6/checkpoint-200
+#SAVE_DIR_NAME=hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6--checkpoint-200
 
-# CharXiv_reasoning_val RealWorldQA
-DATA=CharXiv_reasoning_val
+# CharXiv_reasoning_val RealWorldQA HRBench4K VStarBench
+DATA="VStarBench HRBench4K"
 
 # run evaluation
 cd ../..

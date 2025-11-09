@@ -95,6 +95,10 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 return True
             elif "CharXiv" in dataset:
                 return True
+            elif dataset == "VStarBench":
+                return True
+            elif dataset == "HRBench4K":
+                return True
             else:
                 ipdb.set_trace()  # todo see if we need custom prompt
                 pass
@@ -105,7 +109,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         import pandas as pd
 
         if self.project_name == "lpt3":
-            if dataset == "RealWorldQA":
+            if dataset in ["RealWorldQA", "VStarBench", "HRBench4K"]:
                 # reference: Qwen2VLPromptMixin - build_mcq_prompt
                 question = line['question']
                 option_names = [name for name in string.ascii_uppercase if name in line and not pd.isna(line[name])]
