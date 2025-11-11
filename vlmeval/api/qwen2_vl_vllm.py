@@ -100,6 +100,34 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
 
         return content
 
+    def _parse_answer(self, generation: str, dataset: str = None) -> str | None:
+        """
+        Parse the answer string.
+        If not found, return None.
+        """
+        if self.model_name in ["Qwen3-VL-8B-Thinking-VLLM"]:
+            if "ZEROBench" in dataset:
+                if "</think>" in generation:
+                    answer = generation.split("</think>")[-1].strip()
+                elif len(generation) > 3000:
+                    # to reduce length
+                    answer = generation[-3000:]
+                else:
+                    answer = generation
+            else:
+                answer = generation
+        elif self.model_name in ["Qwen3-VL-8B-Instruct-VLLM"]:
+            if len(generation) > 3000:
+                # to reduce length
+                answer = generation[-3000:]
+            else:
+                answer = generation
+
+        else:
+            raise NotImplementedError
+
+        return answer
+
     def generate_inner(self, message, **kwargs):
         messages = [
             {"role": "user", "content": self._prepare_content_vllm(message)}
@@ -142,7 +170,10 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
         answer = self.fail_msg
         try:
             resp_struct = json.loads(response.text)
-            answer = resp_struct['choices'][0]['message']['content'].strip()
+            generation = resp_struct['choices'][0]['message']['content'].strip()
+            answer = self._parse_answer(generation, dataset=kwargs['dataset'])
+            if answer is None:
+                answer = generation
         except Exception as err:
             if self.verbose:
                 self.logger.error(f'{type(err)}: {err}')

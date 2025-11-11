@@ -2379,6 +2379,9 @@ class ZEROBench(ImageVQADataset):
             formatted_response = pred.strip()
             # convert to lowercase
             formatted_response = formatted_response.lower()
+            if "{" not in formatted_response and "}" not in formatted_response:
+                formatted_response = f"{{{formatted_response}}}"
+
             # try to extract final answer from curly braces
             parsed_answer = ''
             try:

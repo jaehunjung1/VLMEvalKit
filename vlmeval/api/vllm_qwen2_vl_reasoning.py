@@ -99,6 +99,8 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 return True
             elif dataset == "HRBench4K":
                 return True
+            elif dataset in ["ZEROBench", "ZEROBench_sub"]:
+                return True
             else:
                 ipdb.set_trace()  # todo see if we need custom prompt
                 pass
@@ -124,6 +126,20 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 else:
                     msgs = [dict(type='image', value=image_path)]
                 msgs.append(dict(type='text', value=prompt))
+
+                return msgs
+
+            elif dataset in ["ZEROBench", "ZEROBench_sub"]:
+                question = line['question'].strip()
+
+                image_path = self.dump_image(line, dataset)
+
+                msgs = []
+                if isinstance(image_path, list):
+                    msgs.extend([dict(type='image', value=p) for p in image_path])
+                else:
+                    msgs = [dict(type='image', value=image_path)]
+                msgs.append(dict(type='text', value=question))
 
                 return msgs
 
@@ -175,7 +191,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
 
         return content
 
-    def _parse_answer(self, generation: str) -> str | None:
+    def _parse_answer(self, generation: str, dataset: str = None) -> str | None:
         """
         Parse the answer string.
         If not found, return None.
@@ -187,12 +203,6 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             if "</think>" in generation:
                 answer = generation.split("</think>")[-1].strip()
             elif len(generation) > 3000:
-                # to reduce length
-                answer = generation[-3000:]
-            else:
-                answer = generation
-        elif self.model_name in ["Qwen3-VL-8B-Instruct-VLLM"]:
-            if len(generation) > 3000:
                 # to reduce length
                 answer = generation[-3000:]
             else:
@@ -227,6 +237,10 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 answer = "(... omitted) " + generation[-3000:]
             else:
                 answer = generation
+
+            # # dataset-specific eval logic
+            # if dataset in ["ZEROBench", "ZEROBench_sub"]:
+            #     answer = f"{{{answer}}}"
         else:
             raise NotImplementedError
 
@@ -320,7 +334,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         try:
             resp_struct = json.loads(response.text)
             generation = resp_struct['choices'][0]['message']['content'].strip()
-            answer = self._parse_answer(generation)
+            answer = self._parse_answer(generation, dataset=kwargs['dataset'])
             if answer is None:
                 answer = generation
         except Exception as err:
