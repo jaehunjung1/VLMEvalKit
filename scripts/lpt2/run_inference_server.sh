@@ -14,8 +14,8 @@
 #MODEL_NAME=UCSC-VLAA/VLAA-Thinker-Qwen2.5VL-7B
 #MODEL_NAME=csfufu/Revisual-R1-final
 #MODEL_NAME=XiaomiMiMo/MiMo-VL-7B-SFT
-#MODEL_NAME=Qwen/Qwen3-VL-8B-Instruct
-MODEL_NAME=nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16
+MODEL_NAME=Qwen/Qwen3-VL-8B-Instruct
+#MODEL_NAME=nvidia/NVIDIA-Nemotron-Nano-12B-v2-VL-BF16
 
 
 vllm serve $MODEL_NAME --port 8000 --host 0.0.0.0 --dtype bfloat16 --tensor-parallel-size 4 --max-model-len 20k \

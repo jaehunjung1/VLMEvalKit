@@ -116,7 +116,7 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
                     answer = generation
             else:
                 answer = generation
-        elif self.model_name in ["Qwen3-VL-8B-Instruct-VLLM"]:
+        elif self.model_name in ["Qwen3-VL-8B-Instruct-VLLM", "Qwen2.5-VL-7B-VLLM"]:
             if len(generation) > 3000:
                 # to reduce length
                 answer = generation[-3000:]
