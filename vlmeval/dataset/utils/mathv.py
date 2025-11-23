@@ -1,5 +1,6 @@
 import ipdb
 import math_verify
+from latex2sympy2_extended import latex2sympy
 
 from ...smp import *
 from ...utils import can_infer
@@ -15,46 +16,46 @@ from func_timeout import func_timeout, FunctionTimedOut
 FAIL_MSG = 'Failed to obtain answer via API.'
 
 
-def is_equal(asw: str, gt_asw: str) -> bool:
-    try:
-        return func_timeout(30, _is_equal, args=(asw, gt_asw))
-    except FunctionTimedOut:
-        print(f"Math-Verify timed out.")
-        return False
-
-def _is_equal(asw: str, gt_asw: str) -> bool:
-    parsed_asw = math_verify.parse(asw, parsing_timeout=0)
-    parsed_gt_asw = math_verify.parse(gt_asw, parsing_timeout=0)
-
-    return math_verify.verify(parsed_asw, parsed_gt_asw, timeout_seconds=0)
-
-
-# # @timeout_decorator.timeout(30)
 # def is_equal(asw: str, gt_asw: str) -> bool:
-#     if not isinstance(asw, str) != str or not isinstance(gt_asw, str):
-#         print('Warning: input is not string')
-#         print(asw, gt_asw)
-#     asw = str(asw).lower().strip()
-#     gt_asw = str(gt_asw).lower().strip()
-#     if gt_asw == asw:
-#         return True
 #     try:
-#         a = eval(gt_asw)
-#         b = eval(asw)
-#         if abs(a - b) < 1e-6:
-#             return True
-#     except:
-#         pass
-#     try:
-#         a = latex2sympy(gt_asw)
-#         b = latex2sympy(asw)
-#         if abs(eval(str(a)) - eval(str(b))) < 1e-6:
-#             return True
-#         if abs(a - b) < 1e-6:
-#             return True
-#     except:
-#         pass
-#     return False
+#         return func_timeout(30, _is_equal, args=(asw, gt_asw))
+#     except FunctionTimedOut:
+#         print(f"Math-Verify timed out.")
+#         return False
+
+# def _is_equal(asw: str, gt_asw: str) -> bool:
+#     parsed_asw = math_verify.parse(asw, parsing_timeout=0)
+#     parsed_gt_asw = math_verify.parse(gt_asw, parsing_timeout=0)
+#
+#     return math_verify.verify(parsed_asw, parsed_gt_asw, timeout_seconds=0)
+
+
+@timeout_decorator.timeout(30, use_signals=False)
+def is_equal(asw: str, gt_asw: str) -> bool:
+    if not isinstance(asw, str) != str or not isinstance(gt_asw, str):
+        print('Warning: input is not string')
+        print(asw, gt_asw)
+    asw = str(asw).lower().strip()
+    gt_asw = str(gt_asw).lower().strip()
+    if gt_asw == asw:
+        return True
+    try:
+        a = eval(gt_asw)
+        b = eval(asw)
+        if abs(a - b) < 1e-6:
+            return True
+    except:
+        pass
+    try:
+        a = latex2sympy(gt_asw)
+        b = latex2sympy(asw)
+        if abs(eval(str(a)) - eval(str(b))) < 1e-6:
+            return True
+        if abs(a - b) < 1e-6:
+            return True
+    except:
+        pass
+    return False
 
 
 def get_gpt4_ICE():

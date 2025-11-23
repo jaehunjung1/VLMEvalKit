@@ -99,7 +99,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 return True
             elif dataset == "HRBench4K":
                 return True
-            elif dataset in ["ZEROBench", "ZEROBench_sub"]:
+            elif dataset in ["ZEROBench", "ZEROBench_sub", "InfoVQA_VAL"]:
                 return True
             else:
                 ipdb.set_trace()  # todo see if we need custom prompt
@@ -129,7 +129,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
 
                 return msgs
 
-            elif dataset in ["ZEROBench", "ZEROBench_sub"]:
+            elif dataset in ["ZEROBench", "ZEROBench_sub", "InfoVQA_VAL"]:
                 question = line['question'].strip()
 
                 image_path = self.dump_image(line, dataset)

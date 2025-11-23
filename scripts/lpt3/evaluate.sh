@@ -1,6 +1,6 @@
 # === using VLLM local API === #
 export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
-export JUDGE_API_NODE="pool0-03120"  # todo
+export JUDGE_API_NODE="pool0-02821"  # todo
 JUDGE=Qwen3-30B-A3B-Instruct-2507
 
 # wait until inference & judge server is ready
@@ -21,11 +21,11 @@ echo "[INFO] Judge server is ready to accept connections!"
 MODEL=Qwen3-VL-8B-Thinking-VLLM
 SAVE_DIR_NAME=Qwen3-VL-8B-Thinking-VLLM
 
-#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/zerobench--allava_gqa--curate-rwqa_v1--lr5e-6/checkpoint-480
-#SAVE_DIR_NAME=zerobench--allava_gqa--curate-rwqa_v1--lr5e-6--checkpoint-480
+#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/infovqa_cqpro_cm--doc_charts_v1--curate-rwqa_v1--lr5e-6/checkpoint-480
+#SAVE_DIR_NAME=infovqa_cqpro_cm--doc_charts_v1--curate-rwqa_v1--lr5e-6--checkpoint-480
 
-# CharXiv_reasoning_val RealWorldQA HRBench4K VStarBench ZEROBench ZEROBench_sub
-DATA="ZEROBench ZEROBench_sub"
+# CharXiv_reasoning_val RealWorldQA HRBench4K VStarBench ZEROBench ZEROBench_sub InfoVQA_VAL
+DATA="InfoVQA_VAL"
 
 # run evaluation
 cd ../..

@@ -5,12 +5,12 @@ export OPENAI_API_VERSION="2025-02-01-preview"
 # Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, VLAA-Thinker-Qwen2.5VL-7B-VLLM, NVIDIA-Nemotron-Nano-12B-v2-VL-BF16
 #MODEL=Qwen2.5-VL-7B-VLLM
 
-MODEL=Qwen3-VL-8B-Instruct-VLLM
-SAVE_DIR_NAME=Qwen3-VL-8B-Instruct-VLLM
+MODEL=lpt2-dpo_distill72b_671b_v2__sft_docci_objpt_247k_train_acc7445_acc7589_checkpoint-500
+SAVE_DIR_NAME=lpt2-dpo_distill72b_671b_v2__sft_docci_objpt_247k_train_acc7445_acc7589_checkpoint-500
 
 # VStarBench MMVP RealWorldQA CV-Bench-2D CV-Bench-3D MMStar_filtered MME-RealWorld-Filtered
 #DATA="VStarBench MMVP RealWorldQA CV-Bench-2D CV-Bench-3D MMStar_filtered"
-DATA="MathVision VisuLogic"
+DATA="MathVision_MINI"
 JUDGE=gpt-4o-mini
 
 
