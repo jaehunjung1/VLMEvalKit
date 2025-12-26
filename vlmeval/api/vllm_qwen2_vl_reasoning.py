@@ -51,7 +51,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 self.project_name = "vlm_rl"
             elif "lptv2" in model_name or "lpt2" in model_name:
                 self.project_name = "lpt2"
-            elif "lpt3-sft" in model_name:
+            elif "lpt3" in model_name:
                 self.project_name = "lpt3"
             else:
                 ipdb.set_trace()
@@ -99,6 +99,8 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 return True
             elif dataset == "HRBench4K":
                 return True
+            elif "SEEDBench" in dataset:
+                return True
             elif dataset in ["ZEROBench", "ZEROBench_sub", "InfoVQA_VAL"]:
                 return True
             else:
@@ -111,11 +113,14 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         import pandas as pd
 
         if self.project_name == "lpt3":
-            if dataset in ["RealWorldQA", "VStarBench", "HRBench4K"]:
+            if dataset in ["RealWorldQA", "VStarBench", "HRBench4K", "SEEDBench_IMG", "SEEDBench2", "SEEDBench2_Plus"]:
                 # reference: Qwen2VLPromptMixin - build_mcq_prompt
                 question = line['question']
                 option_names = [name for name in string.ascii_uppercase if name in line and not pd.isna(line[name])]
-                options_str = "\n".join(f"{option_name}. {line[option_name]}" for option_name in option_names)
+                if "SEEDBench" in dataset:
+                    options_str = "\n".join(f"({option_name}) {line[option_name]}" for option_name in option_names)
+                else:
+                    options_str = "\n".join(f"{option_name}. {line[option_name]}" for option_name in option_names)
                 prompt = f"{question}\n{options_str}".strip()
 
                 image_path = self.dump_image(line, dataset)
@@ -126,7 +131,6 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 else:
                     msgs = [dict(type='image', value=image_path)]
                 msgs.append(dict(type='text', value=prompt))
-
                 return msgs
 
             elif dataset in ["ZEROBench", "ZEROBench_sub", "InfoVQA_VAL"]:
@@ -140,6 +144,16 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 else:
                     msgs = [dict(type='image', value=image_path)]
                 msgs.append(dict(type='text', value=question))
+
+                return msgs
+
+            elif dataset in ["CharXiv_reasoning_val"]:
+                msgs = super().build_prompt(line, dataset)
+
+                inst_to_remove = ("* Your final answer must be grounded to some text that is explicitly written and relevant to the question in the chart.\n    "
+                                  "* If you need to answer multiple terms, separate them with commas.\n    "
+                                  "* Unless specified in the question (such as answering with a letter), you are required to answer the full names of subplots and/or labels by default.\n")
+                msgs[1]['value'] = msgs[1]['value'].split(inst_to_remove)[0].strip()
 
                 return msgs
 
@@ -227,16 +241,24 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             else:
                 answer = generation
         elif Path(self.model_name).exists() and self.project_name == "lpt3":
-            # LPT3 models
-            if "Final Answer:" in generation:
-                answer = generation.split("Final Answer:")[-1].strip()
-            elif "</think>" in generation:
-                answer = generation.split("</think>")[-1].strip()
-            elif len(generation) > 3000:
-                # to reduce length
-                answer = "(... omitted) " + generation[-3000:]
+            # LPT3 SFT models
+            if dataset in ["CharXiv_reasoning_val"]:
+                if len(generation) > 15000:
+                    # to reduce length
+                    answer = "(... omitted) " + generation[-15000:]
+                else:
+                    answer = generation
             else:
-                answer = generation
+                if "Final Answer:" in generation:
+                    answer = generation.split("Final Answer:")[-1].strip()
+                elif "</think>" in generation:
+                    answer = generation.split("</think>")[-1].strip()
+                elif len(generation) > 3000:
+                    # to reduce length
+                    answer = "(... omitted) " + generation[-3000:]
+                else:
+                    answer = generation
+            # answer = generation
 
             # # dataset-specific eval logic
             # if dataset in ["ZEROBench", "ZEROBench_sub"]:
@@ -285,10 +307,13 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             #     {'type': 'text', 'value': 'Which city experiences the most "zig-zagging" in stay at home rates with respect to the number of daily new confirmed Covid-19 cases?'}]
             # ipdb.set_trace()
             # pass
-            auxiliary_instruction = ("* Your final answer must be grounded to some text that is explicitly written and relevant to the question in the chart.\n    "
-                                     "* If you need to answer multiple terms, separate them with commas.\n    "
-                                     "* Unless specified in the question (such as answering with a letter), you are required to answer the full names of subplots and/or labels by default.\n")
-            message[1]['value'] = message[1]['value'].split(auxiliary_instruction)[0].strip()
+
+            # remove the auxiliary instruction in CharXiv
+            # auxiliary_instruction = ("* Your final answer must be grounded to some text that is explicitly written and relevant to the question in the chart.\n    "
+            #                          "* If you need to answer multiple terms, separate them with commas.\n    "
+            #                          "* Unless specified in the question (such as answering with a letter), you are required to answer the full names of subplots and/or labels by default.\n")
+            # message[1]['value'] = message[1]['value'].split(auxiliary_instruction)[0].strip()
+
             messages = [
                 {"role": "user", "content": self._prepare_content_vllm(message)}
             ]
@@ -317,7 +342,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             messages=messages,
             n=1,
             temperature=temperature,
-            top_p=0.95,
+            top_p=0.001,
             top_k=1,
             repetition_penalty=1.0,
             max_tokens=max_tokens,

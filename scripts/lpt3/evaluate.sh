@@ -1,6 +1,6 @@
 # === using VLLM local API === #
 export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
-export JUDGE_API_NODE="pool0-02821"  # todo
+export JUDGE_API_NODE="pool0-04311"  # todo
 JUDGE=Qwen3-30B-A3B-Instruct-2507
 
 # wait until inference & judge server is ready
@@ -18,23 +18,26 @@ done
 echo "[INFO] Judge server is ready to accept connections!"
 
 # Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, Qwen3-VL-8B-Instruct-VLLM, Qwen3-VL-8B-Thinking-VLLM, NVIDIA-Nemotron-Nano-12B-v2-VL-BF16
-MODEL=Qwen3-VL-8B-Thinking-VLLM
-SAVE_DIR_NAME=Qwen3-VL-8B-Thinking-VLLM
+MODEL=Qwen3-VL-8B-Instruct-VLLM
+SAVE_DIR_NAME=Qwen3-VL-8B-Instruct-VLLM
 
-#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/infovqa_cqpro_cm--doc_charts_v1--curate-rwqa_v1--lr5e-6/checkpoint-480
-#SAVE_DIR_NAME=infovqa_cqpro_cm--doc_charts_v1--curate-rwqa_v1--lr5e-6--checkpoint-480
+#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/qwen3_7b--v2_charts--lr5e-6/checkpoint-1000
+#SAVE_DIR_NAME=qwen3_7b--v2_charts--lr5e-6--checkpoint-1000
 
-# CharXiv_reasoning_val RealWorldQA HRBench4K VStarBench ZEROBench ZEROBench_sub InfoVQA_VAL
-DATA="InfoVQA_VAL"
+#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/235B-v2_charts-N4-k2-16k/hf_global_step_80
+#SAVE_DIR_NAME=235B-v2_charts-N4-k2-16k--hf_global_step_80
+
+# CharXiv_reasoning_val RealWorldQA HRBench4K VStarBench ZEROBench ZEROBench_sub InfoVQA_VAL SEEDBench2_Plus
+DATA=CharXiv_reasoning_val
 
 # run evaluation
 cd ../..
 python run.py --data $DATA --save_dir_name $SAVE_DIR_NAME \
---model $MODEL --infer-api-nproc 128 --infer-retry 3 \
+--model $MODEL --infer-api-nproc 512 --infer-retry 3 \
 --judge $JUDGE --judge-api-nproc 128 --judge-retry 10 --work-dir "./outputs/lpt3" \
 --reuse --verbose
 
-# todo infer-api-nproc 512
+# todo nrpoc 128 128
 
 
 ## === using Azure API === #

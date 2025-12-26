@@ -1707,8 +1707,8 @@ lpt3_groups = {
         wait=5,
         timeout=3000,
         verbose=False,
-    ) for path in Path("/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/"
-                       "checkpoints/").glob("*/checkpoint-*")
+    ) for path in list(Path("/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/").glob("*/checkpoint-*")) +
+                  list(Path("/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints").glob("*/hf_global_step_*"))
 }
 
 vlm_rl_groups = {

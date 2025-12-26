@@ -106,14 +106,11 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
         If not found, return None.
         """
         if self.model_name in ["Qwen3-VL-8B-Thinking-VLLM"]:
-            if "ZEROBench" in dataset or "InfoVQA" in dataset:
-                if "</think>" in generation:
-                    answer = generation.split("</think>")[-1].strip()
-                elif len(generation) > 3000:
-                    # to reduce length
-                    answer = generation[-3000:]
-                else:
-                    answer = generation
+            if "</think>" in generation:
+                answer = generation.split("</think>")[-1].strip()
+            elif len(generation) > 3000:
+                # to reduce length
+                answer = generation[-3000:]
             else:
                 answer = generation
         elif self.model_name in ["Qwen3-VL-8B-Instruct-VLLM", "Qwen2.5-VL-7B-VLLM"]:
