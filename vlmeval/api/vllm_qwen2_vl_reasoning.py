@@ -131,7 +131,6 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 else:
                     msgs = [dict(type='image', value=image_path)]
                 msgs.append(dict(type='text', value=prompt))
-                return msgs
 
             elif dataset in ["ZEROBench", "ZEROBench_sub", "InfoVQA_VAL"]:
                 question = line['question'].strip()
@@ -145,8 +144,6 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                     msgs = [dict(type='image', value=image_path)]
                 msgs.append(dict(type='text', value=question))
 
-                return msgs
-
             elif dataset in ["CharXiv_reasoning_val"]:
                 msgs = super().build_prompt(line, dataset)
 
@@ -155,11 +152,15 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                                   "* Unless specified in the question (such as answering with a letter), you are required to answer the full names of subplots and/or labels by default.\n")
                 msgs[1]['value'] = msgs[1]['value'].split(inst_to_remove)[0].strip()
 
-                return msgs
-
             else:
                 ipdb.set_trace()  # todo implement custom prompt for other dataset
                 pass
+                raise NotImplementedError
+
+            if any(name in self.full_model_name for name in ["235B-v2_charts-charxiv-eng-k2-16k"]):
+                msgs[1]['value'] += "\nRespond in English, and end you response with \"Final Answer: your final answer\"."
+
+            return msgs
         else:
             return super().build_prompt(line, dataset)
 
@@ -268,6 +269,45 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
 
         return answer
 
+    def get_inference_result(self, headers, payload, dataset_name):
+        if self.project_name == "lpt3" and dataset_name in ["SEEDBench2_Plus"]:
+            # for faster evaluation, we halve the max tokens (in the config) for some datasets
+            # if generated response does not end, retry generation (all under the same token budget)
+            max_num_gen = 2
+            payload["max_tokens"] = payload["max_tokens"] // max_num_gen
+        else:
+            max_num_gen = 1
+
+        num_gen = 0
+        ret_code, answer, response = 0, "", None
+        while num_gen < max_num_gen:
+            num_gen += 1
+            response = requests.post(
+                self.api_base,
+                headers=headers, data=json.dumps(payload), timeout=self.timeout * 1.1)
+            ret_code = response.status_code
+            ret_code = 0 if (200 <= int(ret_code) < 300) else ret_code
+            answer = self.fail_msg
+            try:
+                resp_struct = json.loads(response.text)
+                generation = resp_struct['choices'][0]['message']['content'].strip()
+                answer = self._parse_answer(generation, dataset=dataset_name)
+                if answer is None:
+                    answer = generation
+
+            except Exception as err:
+                generation = ""
+                if self.verbose:
+                    self.logger.error(f'{type(err)}: {err}')
+                    self.logger.error(response.text if hasattr(response, 'text') else response)
+
+            if "</think>" in generation:
+                break
+
+        return ret_code, answer, response
+
+
+
     def generate_inner(self, message, **kwargs):
         if self.config_system_prompt is not None:
             system_message = [
@@ -350,22 +390,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         if mm_processor_kwargs is not None:
             payload["mm_processor_kwargs"] = mm_processor_kwargs
 
-        response = requests.post(
-            self.api_base,
-            headers=headers, data=json.dumps(payload), timeout=self.timeout * 1.1)
-        ret_code = response.status_code
-        ret_code = 0 if (200 <= int(ret_code) < 300) else ret_code
-        answer = self.fail_msg
-        try:
-            resp_struct = json.loads(response.text)
-            generation = resp_struct['choices'][0]['message']['content'].strip()
-            answer = self._parse_answer(generation, dataset=kwargs['dataset'])
-            if answer is None:
-                answer = generation
-        except Exception as err:
-            if self.verbose:
-                self.logger.error(f'{type(err)}: {err}')
-                self.logger.error(response.text if hasattr(response, 'text') else response)
+        ret_code, answer, response = self.get_inference_result(headers, payload, kwargs["dataset"])
 
         return ret_code, answer, response
 
