@@ -1,6 +1,6 @@
 # === using VLLM local API === #
 export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
-export JUDGE_API_NODE="pool0-01669"  # todo
+export JUDGE_API_NODE="pool0-01438"  # todo
 JUDGE=Qwen3-30B-A3B-Instruct-2507
 
 # wait until inference & judge server is ready
@@ -21,11 +21,11 @@ echo "[INFO] Judge server is ready to accept connections!"
 #MODEL=Qwen3-VL-8B-Instruct-VLLM
 #SAVE_DIR_NAME=Qwen3-VL-8B-Instruct-VLLM
 
-MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6/checkpoint-200
-SAVE_DIR_NAME=hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6--checkpoint-200
+#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6/checkpoint-200
+#SAVE_DIR_NAME=hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6--checkpoint-200
 
-#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/235B-v2_charts-charxiv-eng-k2-16k/hf_global_step_210
-#SAVE_DIR_NAME=235B-v2_charts-charxiv-eng-k2-16k--hf_global_step_210
+MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/235B-8B-thinking--hrv--v2_hr-pdmw-curate-rwqa_v1--16k/hf_global_step_150
+SAVE_DIR_NAME=235B-8B-thinking--hrv--v2_hr-pdmw-curate-rwqa_v1--16k--hf_global_step_150
 
 # CharXiv_reasoning_val RealWorldQA HRBench4K VStarBench ZEROBench ZEROBench_sub InfoVQA_VAL SEEDBench2_Plus
 DATA="HRBench4K VStarBench"
