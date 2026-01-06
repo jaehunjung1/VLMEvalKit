@@ -2,7 +2,7 @@
 
 #MODEL=Qwen/Qwen3-VL-8B-Instruct
 #MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6/checkpoint-200
-MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/235B-8B-thinking--hrv--v2_hr-pdmw-curate-rwqa_v1--16k/hf_global_step_150
+MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/235B-8B-thinking--hrv--v2_hr-pdmw-curate-rwqa_v1--16k/hf_global_step_242
 
 vllm serve $MODEL --port 8000 --host 0.0.0.0 --dtype bfloat16 --tensor-parallel-size 4 \
 --allowed-local-media-path / --limit-mm-per-prompt '{"image": 4, "video": 0}' --max-model-len 65536 --trust_remote_code
