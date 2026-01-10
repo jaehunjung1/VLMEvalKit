@@ -147,9 +147,11 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             elif dataset in ["CharXiv_reasoning_val"]:
                 msgs = super().build_prompt(line, dataset)
 
-                inst_to_remove = ("* Your final answer must be grounded to some text that is explicitly written and relevant to the question in the chart.\n    "
+                inst_to_remove = ("* Your final answer must be grounded to some text that is explicitly written and "
+                                  "relevant to the question in the chart.\n    "
                                   "* If you need to answer multiple terms, separate them with commas.\n    "
-                                  "* Unless specified in the question (such as answering with a letter), you are required to answer the full names of subplots and/or labels by default.\n")
+                                  "* Unless specified in the question (such as answering with a letter), you are "
+                                  "required to answer the full names of subplots and/or labels by default.\n")
                 msgs[1]['value'] = msgs[1]['value'].split(inst_to_remove)[0].strip()
 
             else:
@@ -273,8 +275,9 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         if self.project_name == "lpt3" and dataset_name in ["SEEDBench2_Plus"]:
             # for faster evaluation, we halve the max tokens (in the config) for some datasets
             # if generated response does not end, retry generation (all under the same token budget)
-            max_num_gen = 2
-            payload["max_tokens"] = payload["max_tokens"] // max_num_gen
+            # max_num_gen = 2
+            # payload["max_tokens"] = payload["max_tokens"] // max_num_gen
+            max_num_gen = 1
         else:
             max_num_gen = 1
 
