@@ -101,7 +101,7 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 return True
             elif "SEEDBench" in dataset:
                 return True
-            elif dataset in ["ZEROBench", "ZEROBench_sub", "InfoVQA_VAL"]:
+            elif dataset in ["ZEROBench", "ZEROBench_sub", "InfoVQA_VAL", "CV-Bench-2D", "StaticEmbodiedBench"]:
                 return True
             else:
                 ipdb.set_trace()  # todo see if we need custom prompt
@@ -113,11 +113,12 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
         import pandas as pd
 
         if self.project_name == "lpt3":
-            if dataset in ["RealWorldQA", "VStarBench", "HRBench4K", "SEEDBench_IMG", "SEEDBench2", "SEEDBench2_Plus"]:
+            if dataset in ["RealWorldQA", "VStarBench", "HRBench4K", "SEEDBench_IMG", "SEEDBench2", "SEEDBench2_Plus",
+                           "CV-Bench-2D", "StaticEmbodiedBench"]:
                 # reference: Qwen2VLPromptMixin - build_mcq_prompt
                 question = line['question']
                 option_names = [name for name in string.ascii_uppercase if name in line and not pd.isna(line[name])]
-                if "SEEDBench" in dataset:
+                if "SEEDBench" in dataset or dataset in ["CV-Bench-2D"]:
                     options_str = "\n".join(f"({option_name}) {line[option_name]}" for option_name in option_names)
                 else:
                     options_str = "\n".join(f"{option_name}. {line[option_name]}" for option_name in option_names)
@@ -243,6 +244,17 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 answer = "(... omitted) " + generation[-1000:]
             else:
                 answer = generation
+        elif Path(self.model_name).exists() and self.project_name == "lpt3" and "ablation" in self.model_name:
+            # LPT3 SFT, for ablation
+            if "</think>" in generation:
+                answer = generation.split("</think>")[-1].strip()
+            elif len(generation) > 3000:
+                # to reduce length
+                answer = generation[-3000:]
+            else:
+                answer = generation
+            # else:
+            #     answer = "Student answer was incomplete."
         elif Path(self.model_name).exists() and self.project_name == "lpt3":
             # LPT3 SFT models
             if dataset in ["CharXiv_reasoning_val"]:
@@ -345,18 +357,6 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             ]
 
         elif Path(self.model_name).exists() and self.project_name == "lpt3":
-            # message = [
-            #     {'type': 'image', 'value': '/root/lustre/verl/LMUData/images/CharXiv_reasoning_val/images/7.jpg'},
-            #     {'type': 'text', 'value': 'Which city experiences the most "zig-zagging" in stay at home rates with respect to the number of daily new confirmed Covid-19 cases?'}]
-            # ipdb.set_trace()
-            # pass
-
-            # remove the auxiliary instruction in CharXiv
-            # auxiliary_instruction = ("* Your final answer must be grounded to some text that is explicitly written and relevant to the question in the chart.\n    "
-            #                          "* If you need to answer multiple terms, separate them with commas.\n    "
-            #                          "* Unless specified in the question (such as answering with a letter), you are required to answer the full names of subplots and/or labels by default.\n")
-            # message[1]['value'] = message[1]['value'].split(auxiliary_instruction)[0].strip()
-
             messages = [
                 {"role": "user", "content": self._prepare_content_vllm(message)}
             ]
