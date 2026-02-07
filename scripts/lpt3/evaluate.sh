@@ -50,17 +50,17 @@ done
 echo "[INFO] Inference server is ready to accept connections!"
 
 # Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, Qwen3-VL-8B-Instruct-VLLM, Qwen3-VL-8B-Thinking-VLLM, NVIDIA-Nemotron-Nano-12B-v2-VL-BF16
-MODEL=Qwen3-VL-8B-Thinking-VLLM
-SAVE_DIR_NAME=Qwen3-VL-8B-Thinking-VLLM
+#MODEL=Qwen3-VL-8B-Thinking-VLLM
+#SAVE_DIR_NAME=Qwen3-VL-8B-Thinking-VLLM
 
 #MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6/checkpoint-200
 #SAVE_DIR_NAME=hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6--checkpoint-200
 
-#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/ablation--sim_skill_10000-10000/hf_global_step_75
-#SAVE_DIR_NAME=ablation--sim_skill_10000-10000--hf_global_step_75
+MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/235B-8B-thinking--hrv--v2_hr-pdmw-curate-none--16k/hf_global_step_300
+SAVE_DIR_NAME=235B-8B-thinking--hrv--v2_hr-pdmw-curate-none--16k--hf_global_step_300
 
 # CharXiv_reasoning_val RealWorldQA HRBench4K VStarBench ZEROBench ZEROBench_sub InfoVQA_VAL SEEDBench2_Plus CV-Bench-2D StaticEmbodiedBench MMVP HallusionBench CRPE_RELATION
-DATA="CharXiv_reasoning_val"
+DATA="VStarBench"
 
 # run evaluation
 cd ../..
