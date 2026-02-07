@@ -1,7 +1,46 @@
-# === using VLLM local API === #
+## === using VLLM local API === #
+#export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
+#export JUDGE_API_NODE="nvl72045-T18"  # todo
+#JUDGE=Qwen3-30B-A3B-Instruct-2507
+#
+## wait until inference & judge server is ready
+#while ! nc -z 0.0.0.0 8000; do
+#  echo "[INFO] Waiting for inference server to accept connections..."
+#  sleep 10s
+#done
+#echo "[INFO] Inference server is ready to accept connections!"
+#
+#
+#while ! nc -z $JUDGE_API_NODE 8000; do
+#  echo "[INFO] Waiting for judge server to accept connections..."
+#  sleep 10s
+#done
+#echo "[INFO] Judge server is ready to accept connections!"
+#
+## Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, Qwen3-VL-8B-Instruct-VLLM, Qwen3-VL-8B-Thinking-VLLM, NVIDIA-Nemotron-Nano-12B-v2-VL-BF16
+##MODEL=Qwen3-VL-8B-Thinking-VLLM
+##SAVE_DIR_NAME=Qwen3-VL-8B-Thinking-VLLM
+#
+##MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6/checkpoint-200
+##SAVE_DIR_NAME=hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6--checkpoint-200
+#
+#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/debug-235B-8B-thinking-N4-k2-16k/hf_global_step_140
+#SAVE_DIR_NAME=debug-235B-8B-thinking-N4-k2-16k--hf_global_step_140
+#
+## CharXiv_reasoning_val RealWorldQA HRBench4K VStarBench ZEROBench ZEROBench_sub InfoVQA_VAL SEEDBench2_Plus CV-Bench-2D StaticEmbodiedBench MMVP HallusionBench CRPE_RELATION
+#DATA="CharXiv_reasoning_val"
+#
+## run evaluation
+#cd ../..
+#python run.py --data $DATA --save_dir_name $SAVE_DIR_NAME \
+#--model $MODEL --infer-api-nproc 512 --infer-retry 3 \
+#--judge $JUDGE --judge-api-nproc 128 --judge-retry 10 --work-dir "./outputs/lpt3" \
+#--reuse --verbose
+
+
+# === using inference.nvidia.com === #
 export VLLM_API_BASE="http://0.0.0.0:8000/v1/chat/completions"
-export JUDGE_API_NODE="nvl72141-T05"  # todo
-JUDGE=Qwen3-30B-A3B-Instruct-2507
+JUDGE=gpt-4o-mini
 
 # wait until inference & judge server is ready
 while ! nc -z 0.0.0.0 8000; do
@@ -10,22 +49,15 @@ while ! nc -z 0.0.0.0 8000; do
 done
 echo "[INFO] Inference server is ready to accept connections!"
 
-
-while ! nc -z $JUDGE_API_NODE 8000; do
-  echo "[INFO] Waiting for judge server to accept connections..."
-  sleep 10s
-done
-echo "[INFO] Judge server is ready to accept connections!"
-
 # Qwen2.5-VL-3B-VLLM, Qwen2.5-VL-7B-VLLM, ReVisual-R1-VLLM, MiMo-VL-7B-SFT-VLLM, MiMo-VL-7B-RL-VLLM, Qwen3-VL-8B-Instruct-VLLM, Qwen3-VL-8B-Thinking-VLLM, NVIDIA-Nemotron-Nano-12B-v2-VL-BF16
-#MODEL=Qwen3-VL-8B-Thinking-VLLM
-#SAVE_DIR_NAME=Qwen3-VL-8B-Thinking-VLLM
+MODEL=Qwen3-VL-8B-Thinking-VLLM
+SAVE_DIR_NAME=Qwen3-VL-8B-Thinking-VLLM
 
 #MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6/checkpoint-200
 #SAVE_DIR_NAME=hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6--checkpoint-200
 
-MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/ablation--low_div-57813/hf_global_step_40
-SAVE_DIR_NAME=ablation--low_div-57813--hf_global_step_40
+#MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/ablation--sim_skill_10000-10000/hf_global_step_75
+#SAVE_DIR_NAME=ablation--sim_skill_10000-10000--hf_global_step_75
 
 # CharXiv_reasoning_val RealWorldQA HRBench4K VStarBench ZEROBench ZEROBench_sub InfoVQA_VAL SEEDBench2_Plus CV-Bench-2D StaticEmbodiedBench MMVP HallusionBench CRPE_RELATION
 DATA="CharXiv_reasoning_val"
@@ -34,8 +66,10 @@ DATA="CharXiv_reasoning_val"
 cd ../..
 python run.py --data $DATA --save_dir_name $SAVE_DIR_NAME \
 --model $MODEL --infer-api-nproc 512 --infer-retry 3 \
---judge $JUDGE --judge-api-nproc 128 --judge-retry 10 --work-dir "./outputs/lpt3" \
+--judge $JUDGE --judge-api-nproc 8 --judge-retry 10 --work-dir "./outputs/lpt3" \
 --reuse --verbose
+
+
 
 
 

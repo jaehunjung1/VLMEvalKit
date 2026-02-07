@@ -106,6 +106,17 @@ class Qwen2VLVLLM(OpenAIWrapper, Qwen2VLPromptMixin):
         If not found, return None.
         """
         if self.model_name in ["Qwen3-VL-8B-Thinking-VLLM"]:
+            # New version - remove <think>, but if not existing, just return the generation
+            # if "</think>" in generation:
+            #     answer = generation.split("</think>")[-1].strip()
+            # else:
+            #     answer = generation
+
+            # if "</think>" in generation:
+            #     answer = generation.split("</think>")[-1].strip()
+            # else:
+            #     answer = "Student answer was incomplete."
+
             if "</think>" in generation:
                 answer = generation.split("</think>")[-1].strip()
             elif len(generation) > 3000:

@@ -50,10 +50,11 @@ class OpenAIWrapper(BaseAPI):
                  img_detail: str = 'low',
                  use_azure: bool = False,
                  **kwargs):
-
         # args.judge has to be without slash (judge name is used as part of eval file name)
         if model == "Qwen3-32B":
             self.model = "Qwen/Qwen3-32B"
+        elif model.startswith("gpt-4o-mini"):
+            self.model = "azure/openai/gpt-4o-mini"
         else:
             self.model = model
         self.cur_idx = 0
@@ -233,7 +234,11 @@ class OpenAIWrapper(BaseAPI):
         ret_code = 0 if (200 <= int(ret_code) < 300) else ret_code
         answer = self.fail_msg
         try:
-            resp_struct = json.loads(response.text)
+            if "```json" in response.text and "```" in response.text:
+                text = response.text.replace("```json", "").replace("```", "").strip()
+            else:
+                text = response.text
+            resp_struct = json.loads(text)
             answer = resp_struct['choices'][0]['message']['content'].strip()
         except Exception as err:
             if ret_code == 429 and response.text == "local_rate_limited":

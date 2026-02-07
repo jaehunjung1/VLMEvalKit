@@ -45,6 +45,17 @@ class Qwen2VLPromptMixin:
     def build_prompt(self, line, dataset: str) -> list[dict[str, str]]:
         from vlmeval.dataset import DATASET_TYPE
 
+        # if dataset in ["CharXiv_reasoning_val"]:
+        #     msgs = self._build_vqa_prompt(line, dataset)
+        #
+        #     inst_to_remove = ("* Your final answer must be grounded to some text that is explicitly written and "
+        #                       "relevant to the question in the chart.\n    "
+        #                       "* If you need to answer multiple terms, separate them with commas.\n    "
+        #                       "* Unless specified in the question (such as answering with a letter), you are "
+        #                       "required to answer the full names of subplots and/or labels by default.\n")
+        #     msgs[1]['value'] = msgs[1]['value'].split(inst_to_remove)[0].strip()
+        #     return msgs
+
         if dataset in {'MMMU_DEV_VAL', 'MMMU_TEST'}:
             return self._build_mmmu_prompt(line, dataset)
         dataset_type = DATASET_TYPE(dataset, default=None)

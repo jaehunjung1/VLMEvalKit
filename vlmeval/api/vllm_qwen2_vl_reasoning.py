@@ -256,28 +256,39 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             # else:
             #     answer = "Student answer was incomplete."
         elif Path(self.model_name).exists() and self.project_name == "lpt3":
-            # LPT3 SFT models
-            if dataset in ["CharXiv_reasoning_val"]:
-                if len(generation) > 15000:
-                    # to reduce length
-                    answer = "(... omitted) " + generation[-15000:]
-                else:
-                    answer = generation
-            else:
-                if "Final Answer:" in generation:
-                    answer = generation.split("Final Answer:")[-1].strip()
-                elif "</think>" in generation:
-                    answer = generation.split("</think>")[-1].strip()
-                elif len(generation) > 3000:
-                    # to reduce length
-                    answer = "(... omitted) " + generation[-3000:]
-                else:
-                    answer = generation
-            # answer = generation
+            # New version - remove <think>, but if not existing, just return the generation
+            # if "</think>" in generation:
+            #     answer = generation.split("</think>")[-1].strip()
+            # else:
+            #     answer = generation
 
-            # # dataset-specific eval logic
-            # if dataset in ["ZEROBench", "ZEROBench_sub"]:
-            #     answer = f"{{{answer}}}"
+            # # LPT3 SFT models
+            # if dataset in ["CharXiv_reasoning_val"]:
+            #     if len(generation) > 15000:
+            #         # to reduce length
+            #         answer = "(... omitted) " + generation[-15000:]
+            #     else:
+            #         answer = generation
+            # else:
+            #     if "Final Answer:" in generation:
+            #         answer = generation.split("Final Answer:")[-1].strip()
+            #     elif "</think>" in generation:
+            #         answer = generation.split("</think>")[-1].strip()
+            #     elif len(generation) > 3000:
+            #         # to reduce length
+            #         answer = "(... omitted) " + generation[-3000:]
+            #     else:
+            #         answer = generation
+
+            # ablation version
+            if "</think>" in generation:
+                answer = generation.split("</think>")[-1].strip()
+            elif len(generation) > 3000:
+                # to reduce length
+                answer = generation[-3000:]
+            else:
+                answer = generation
+
         else:
             raise NotImplementedError
 
