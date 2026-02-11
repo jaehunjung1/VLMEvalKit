@@ -101,7 +101,8 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                 return True
             elif "SEEDBench" in dataset:
                 return True
-            elif dataset in ["ZEROBench", "ZEROBench_sub", "InfoVQA_VAL", "CV-Bench-2D", "StaticEmbodiedBench"]:
+            elif dataset in ["ZEROBench", "ZEROBench_sub", "InfoVQA_VAL", "CV-Bench-2D", "StaticEmbodiedBench",
+                             "MathVista_MINI", "LogicVista", "MMMU_Pro_10c"]:
                 return True
             else:
                 ipdb.set_trace()  # todo see if we need custom prompt
@@ -155,7 +156,13 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
                                   "required to answer the full names of subplots and/or labels by default.\n")
                 msgs[1]['value'] = msgs[1]['value'].split(inst_to_remove)[0].strip()
 
+            elif dataset in ["MathVista_MINI", "LogicVista", "MMMU_Pro_10c"]:
+                # just return vanilla prompt
+                msgs = super().build_prompt(line, dataset)
+                return msgs
+
             else:
+                msgs = super().build_prompt(line, dataset)
                 ipdb.set_trace()  # todo implement custom prompt for other dataset
                 pass
                 raise NotImplementedError
@@ -256,11 +263,23 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             # else:
             #     answer = "Student answer was incomplete."
         elif Path(self.model_name).exists() and self.project_name == "lpt3":
-            # New version - remove <think>, but if not existing, just return the generation
-            # if "</think>" in generation:
-            #     answer = generation.split("</think>")[-1].strip()
-            # else:
-            #     answer = generation
+            # Performance version
+            if dataset in ["CharXiv_reasoning_val"]:
+                if len(generation) > 15000:
+                    # to reduce length
+                    answer = "(... omitted) " + generation[-15000:]
+                else:
+                    answer = generation
+            else:
+                if "Final Answer:" in generation:
+                    answer = generation.split("Final Answer:")[-1].strip()
+                elif "</think>" in generation:
+                    answer = generation.split("</think>")[-1].strip()
+                elif len(generation) > 3000:
+                    # to reduce length
+                    answer = "(... omitted) " + generation[-3000:]
+                else:
+                    answer = generation
 
             # # LPT3 SFT models
             # if dataset in ["CharXiv_reasoning_val"]:
@@ -280,14 +299,14 @@ class Qwen2VLReasoningVLLM(BaseAPI, Qwen2VLPromptMixin):
             #     else:
             #         answer = generation
 
-            # ablation version
-            if "</think>" in generation:
-                answer = generation.split("</think>")[-1].strip()
-            elif len(generation) > 3000:
-                # to reduce length
-                answer = generation[-3000:]
-            else:
-                answer = generation
+            # # ablation version
+            # if "</think>" in generation:
+            #     answer = generation.split("</think>")[-1].strip()
+            # elif len(generation) > 3000:
+            #     # to reduce length
+            #     answer = generation[-3000:]
+            # else:
+            #     answer = generation
 
         else:
             raise NotImplementedError

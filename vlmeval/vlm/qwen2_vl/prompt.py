@@ -56,7 +56,7 @@ class Qwen2VLPromptMixin:
         #     msgs[1]['value'] = msgs[1]['value'].split(inst_to_remove)[0].strip()
         #     return msgs
 
-        if dataset in {'MMMU_DEV_VAL', 'MMMU_TEST'}:
+        if dataset in {'MMMU_DEV_VAL', 'MMMU_TEST', 'MMMU_Pro_10c'}:
             return self._build_mmmu_prompt(line, dataset)
         dataset_type = DATASET_TYPE(dataset, default=None)
         if dataset_type == 'MCQ':
