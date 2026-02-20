@@ -56,8 +56,8 @@ echo "[INFO] Inference server is ready to accept connections!"
 #MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/lpt3-sft/scripts/lpt/checkpoints/hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6/checkpoint-200
 #SAVE_DIR_NAME=hrv--v2_hr-pdmw--curate-rwqa_v1--lr5e-6--checkpoint-200
 
-MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/unified_v1_180k/hf_global_step_250
-SAVE_DIR_NAME=unified_v1_180k--hf_global_step_250
+MODEL=/lustre/fs1/portfolios/nvr/projects/nvr_lacr_llm/users/jaehunj/lpt/verl-opd/projects/lpt3/checkpoints/unified_v1_180k_235B_v2/hf_global_step_240
+SAVE_DIR_NAME=unified_v1_180k_235B_v2--hf_global_step_240
 
 # CharXiv_reasoning_val RealWorldQA VStarBench SEEDBench2_Plus HRBench4K ZEROBench ZEROBench_sub InfoVQA_VAL CV-Bench-2D StaticEmbodiedBench MMVP HallusionBench CRPE_RELATION MathVista_MINI LogicVista MMMU_Pro_10c
 DATA="MMMU_Pro_10c"
